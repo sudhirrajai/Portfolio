@@ -2,6 +2,23 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm, Link, router } from '@inertiajs/react';
 import { useEffect } from 'react';
 
+const ensureArray = (val: any): any[] => {
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try {
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (e) {}
+    if (val.includes(',')) {
+      return val.split(',').map(s => s.trim()).filter(s => s);
+    }
+    if (val.trim()) {
+      return [val.trim()];
+    }
+  }
+  return [];
+};
+
 export default function Form({ auth, project }) {
     const isEditing = !!project;
 
@@ -13,8 +30,8 @@ export default function Form({ auth, project }) {
         title: project?.title || '',
         year: project?.year || '',
         summary: project?.summary || '',
-        stack: project?.stack ? project.stack.join(', ') : '',
-        highlights: project?.highlights ? project.highlights.join('\n') : '',
+        stack: project?.stack ? ensureArray(project.stack).join(', ') : '',
+        highlights: project?.highlights ? ensureArray(project.highlights).join('\n') : '',
         color: project?.color || '#000000',
         image: null,
     });
