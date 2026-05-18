@@ -18,6 +18,23 @@ interface LabProject {
   is_open_source: boolean;
 }
 
+const ensureArray = (val: any): any[] => {
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try {
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (e) {}
+    if (val.includes(',')) {
+      return val.split(',').map(s => s.trim()).filter(s => s);
+    }
+    if (val.trim()) {
+      return [val.trim()];
+    }
+  }
+  return [];
+};
+
 const OpenLabs = ({ labs }: { labs: LabProject[] }) => {
   return (
     <>
@@ -70,7 +87,7 @@ const OpenLabs = ({ labs }: { labs: LabProject[] }) => {
 
                     {/* Stack tags */}
                     <div className="flex flex-wrap gap-1.5 mb-4">
-                      {(p.stack || []).map((tag) => (
+                      {ensureArray(p.stack).map((tag) => (
                         <span 
                           key={tag} 
                           className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 border border-black/10 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900"

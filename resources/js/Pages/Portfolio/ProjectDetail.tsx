@@ -66,6 +66,23 @@ const renderMarkdown = (content: string) => {
   return elements;
 };
 
+const ensureArray = (val: any): any[] => {
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try {
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (e) {}
+    if (val.includes(',')) {
+      return val.split(',').map(s => s.trim()).filter(s => s);
+    }
+    if (val.trim()) {
+      return [val.trim()];
+    }
+  }
+  return [];
+};
+
 const ProjectDetail = ({ project }) => {
   if (!project) {
     return (
@@ -147,7 +164,7 @@ const ProjectDetail = ({ project }) => {
                 </h1>
               </header>
               <div className="text-gray-500 dark:text-gray-400 text-[11px] font-bold uppercase tracking-wide">
-                {(project.stack || []).join(' • ')}
+                {ensureArray(project.stack).join(' • ')}
               </div>
             </div>
 
@@ -169,7 +186,7 @@ const ProjectDetail = ({ project }) => {
                 <h2 className="text-indigo-600 dark:text-indigo-400 text-[11px] font-bold uppercase tracking-wider">HIGHLIGHTS & ACHIEVEMENTS</h2>
               </div>
               <ul className="self-stretch flex flex-col gap-3.5">
-                {(project.highlights || []).map((h, i) => (
+                {ensureArray(project.highlights).map((h, i) => (
                   <li
                     key={i}
                     className="text-gray-800 dark:text-gray-300 text-[16px] font-normal leading-relaxed tracking-[-0.2px] pl-6 relative"
