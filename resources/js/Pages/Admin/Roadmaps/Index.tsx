@@ -9,7 +9,9 @@ export default function Index({ auth, roadmaps }) {
 
     const handleConfirmDelete = () => {
         if (!deleteId) return;
-        router.delete(route('admin.roadmaps.destroy', deleteId), {
+        router.post(route('admin.roadmaps.destroy', deleteId), {
+            _method: 'delete'
+        }, {
             onSuccess: () => {
                 toast.success('Roadmap milestone deleted successfully');
             },

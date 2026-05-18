@@ -49,6 +49,7 @@ export default function Form({ auth, roadmap }) {
                                     onChange={(e) => setData('phase', e.target.value)}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                                 >
+                                    <option value="Past">Past</option>
                                     <option value="Now">Now</option>
                                     <option value="Next">Next</option>
                                     <option value="Future">Future</option>

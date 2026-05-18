@@ -29,7 +29,7 @@ class RoadmapController extends Controller
         }
 
         $validated = $request->validate([
-            'phase' => 'required|string|in:Now,Next,Future',
+            'phase' => 'required|string|in:Past,Now,Next,Future',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'tags' => 'nullable|array',
@@ -56,7 +56,7 @@ class RoadmapController extends Controller
         }
 
         $validated = $request->validate([
-            'phase' => 'required|string|in:Now,Next,Future',
+            'phase' => 'required|string|in:Past,Now,Next,Future',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'tags' => 'nullable|array',
