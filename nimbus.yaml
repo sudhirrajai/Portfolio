@@ -1,0 +1,17 @@
+version: 1
+
+# Required runtimes (optional)
+# Nimbus will verify these are installed before proceeding
+runtime:
+  php: 8.3
+  node: 20
+
+# Commands to run during the installation phase (optional)
+# These run in the root of your repository
+install:
+  - composer install --no-dev --optimize-autoloader
+  - npm install
+
+# Commands to run during the build phase (optional)
+build:
+  - npm run build
