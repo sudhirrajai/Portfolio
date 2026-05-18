@@ -78,7 +78,9 @@ const Roadmap = ({ roadmaps }: { roadmaps: RoadmapMilestone[] }) => {
           {/* Timeline Wrapper */}
           <div className="relative max-w-4xl mx-auto py-8">
             {/* Center Line for Desktop Timeline */}
-            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-black dark:bg-white z-0" />
+            {sortedRoadmaps.length > 0 && (
+              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-black dark:bg-white z-0" />
+            )}
 
             <div className="space-y-12">
               {sortedRoadmaps.map((milestone, index) => {

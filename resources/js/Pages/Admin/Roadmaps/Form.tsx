@@ -14,7 +14,7 @@ export default function Form({ auth, roadmap }) {
 
     const submit = (e) => {
         e.preventDefault();
-        
+
         const payload = {
             ...data,
             tags: data.tags ? data.tags.split(',').map(s => s.trim()).filter(s => s) : [],
