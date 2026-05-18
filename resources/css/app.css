@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer utilities {
+  .neo-shadow {
+    @apply shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] transition-all duration-200;
+  }
+  .neo-shadow:hover {
+    @apply shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.2)] -translate-y-[2px] -translate-x-[2px];
+  }
+  .neo-shadow:active {
+    @apply shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] dark:shadow-[0px_0px_0px_0px_rgba(255,255,255,0.1)] translate-y-[4px] translate-x-[4px];
+  }
+}
+
+@layer components {
+  /* Master Global Portfolio Containers */
+  .pf-page {
+    @apply min-h-screen bg-white dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-300;
+  }
+
+  /* Global Design Typography Headers */
+  .pf-heading {
+    @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium tracking-[-2.5px] text-black dark:text-white;
+  }
+
+  .pf-excerpt {
+    @apply text-base md:text-lg max-w-2xl leading-relaxed text-gray-700 dark:text-gray-300;
+  }
+
+  /* Dynamic System Borders and Separators */
+  .pf-border {
+    @apply border-black dark:border-white/20;
+  }
+  
+  .pf-border-soft {
+    @apply border-black/10 dark:border-white/10;
+  }
+
+  .pf-hr {
+    @apply h-px border-0 bg-black/10 dark:bg-white/15;
+  }
+
+  /* Multi-purpose Dynamic Pills and Badges */
+  .pf-badge {
+    @apply bg-white dark:bg-[#111] border border-black dark:border-white/20 px-3 text-[10px] font-bold uppercase tracking-wider flex items-center text-black dark:text-white shadow-sm transition-all duration-200;
+  }
+
+  /* Elite Neo-Shadowed Interactive Actions */
+  .pf-btn {
+    @apply inline-flex items-center justify-center px-6 py-4 bg-black dark:bg-white text-white dark:text-black border border-black dark:border-white hover:bg-[#FA76FF] dark:hover:bg-[#FA76FF] hover:text-black dark:hover:text-black transition-all uppercase text-[11px] font-bold tracking-wider shadow-sm hover:shadow-md;
+  }
+
+  /* WYSIWYG Injected Container Styling */
+  .pf-prose {
+    @apply prose prose-indigo dark:prose-invert max-w-none text-gray-800 dark:text-gray-300 leading-relaxed;
+  }
+}
+
