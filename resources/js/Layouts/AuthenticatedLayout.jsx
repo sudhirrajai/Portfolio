@@ -2,7 +2,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import Dropdown from '@/Components/Dropdown';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { LayoutDashboard, Briefcase, FileText, GraduationCap, Wrench, User, Settings, LogOut, MessageSquare, Settings2, Globe, Calendar, Mail } from 'lucide-react';
+import { LayoutDashboard, Briefcase, FileText, GraduationCap, Wrench, User, Settings, LogOut, MessageSquare, Settings2, Globe, Calendar, Mail, Milestone } from 'lucide-react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
@@ -20,6 +20,7 @@ export default function AuthenticatedLayout({ header, children }) {
     const navItems = [
         { label: 'Dashboard', route: 'dashboard', pattern: 'dashboard', icon: LayoutDashboard },
         { label: 'Projects', route: 'admin.projects.index', pattern: 'admin.projects.*', icon: Briefcase },
+        { label: 'Roadmap', route: 'admin.roadmaps.index', pattern: 'admin.roadmaps.*', icon: Milestone },
         { label: 'Blog Posts', route: 'admin.blogs.index', pattern: 'admin.blogs.*', icon: FileText },
         { label: 'Experience', route: 'admin.experiences.index', pattern: 'admin.experiences.*', icon: Briefcase },
         { label: 'Education', route: 'admin.educations.index', pattern: 'admin.educations.*', icon: GraduationCap },
@@ -30,6 +31,7 @@ export default function AuthenticatedLayout({ header, children }) {
         { label: 'SEO Settings', route: 'admin.seo.index', pattern: 'admin.seo.*', icon: Globe },
         { label: 'Mail & SMTP Server', route: 'admin.mail.index', pattern: 'admin.mail.*', icon: Mail },
     ];
+
 
     return (
         <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans selection:bg-indigo-500 selection:text-white">

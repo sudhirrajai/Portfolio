@@ -7,6 +7,9 @@ export default function Form({ auth, project }) {
 
     const { data, setData, post, put, processing, errors } = useForm({
         is_featured: project?.is_featured || false,
+        is_open_source: project?.is_open_source || false,
+        github_url: project?.github_url || '',
+        open_source_content: project?.open_source_content || '',
         title: project?.title || '',
         year: project?.year || '',
         summary: project?.summary || '',
@@ -15,6 +18,7 @@ export default function Form({ auth, project }) {
         color: project?.color || '#000000',
         image: null,
     });
+
 
     const submit = (e) => {
         e.preventDefault();
@@ -73,6 +77,56 @@ export default function Form({ auth, project }) {
                                     />
                                 </button>
                             </div>
+                            
+                            {/* Open Source / Lab Project Toggle */}
+                            <div className="p-4 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/30 rounded-lg flex items-center justify-between">
+                                <div>
+                                    <label className="block text-sm font-bold text-emerald-900 dark:text-emerald-300">Open Source / Lab Project</label>
+                                    <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-0.5">Mark this project as an Open Source / Lab utility!</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setData('is_open_source', !data.is_open_source)}
+                                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                                        data.is_open_source ? 'bg-emerald-600' : 'bg-gray-200 dark:bg-gray-700'
+                                    }`}
+                                >
+                                    <span
+                                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                                            data.is_open_source ? 'translate-x-5' : 'translate-x-0'
+                                        }`}
+                                    />
+                                </button>
+                            </div>
+
+                            {data.is_open_source && (
+                                <div className="space-y-6 border-l-2 border-emerald-500 pl-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">GitHub Repository URL</label>
+                                        <input
+                                            type="text"
+                                            value={data.github_url}
+                                            onChange={(e) => setData('github_url', e.target.value)}
+                                            placeholder="https://github.com/sudhirrajai/project-name"
+                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+                                        />
+                                        {errors.github_url && <p className="mt-1 text-sm text-red-600">{errors.github_url}</p>}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Open Source / Lab Detailed Content (Markdown supported)</label>
+                                        <textarea
+                                            value={data.open_source_content}
+                                            onChange={(e) => setData('open_source_content', e.target.value)}
+                                            rows={5}
+                                            placeholder="Add extra documentation, installation scripts, or custom labs intro here..."
+                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+                                        ></textarea>
+                                        {errors.open_source_content && <p className="mt-1 text-sm text-red-600">{errors.open_source_content}</p>}
+                                    </div>
+                                </div>
+                            )}
+
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>

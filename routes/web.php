@@ -60,6 +60,21 @@ Route::get('/blog', function () {
     return Inertia::render('Portfolio/Blog', ['blogs' => $blogs]);
 });
 
+Route::get('/open-labs', function () {
+    $labs = \App\Models\Project::where('is_open_source', true)->orderBy('year', 'desc')->get();
+    return Inertia::render('Portfolio/OpenLabs', [
+        'labs' => $labs
+    ]);
+})->name('portfolio.labs');
+
+Route::get('/roadmap', function () {
+    $roadmaps = \App\Models\Roadmap::orderBy('order_weight', 'asc')->orderBy('created_at', 'desc')->get();
+    return Inertia::render('Portfolio/Roadmap', [
+        'roadmaps' => $roadmaps
+    ]);
+})->name('portfolio.roadmap');
+
+
 Route::get('/blog/{slug}', function ($slug) {
     $blog = \App\Models\BlogPost::where('slug', $slug)->firstOrFail();
     return Inertia::render('Portfolio/BlogPost', ['post' => $blog]);
@@ -134,6 +149,16 @@ Route::middleware('auth')->group(function () {
         'index' => 'admin.messages.index',
         'destroy' => 'admin.messages.destroy',
     ]);
+    Route::resource('admin/roadmaps', \App\Http\Controllers\Admin\RoadmapController::class)->names([
+        'index' => 'admin.roadmaps.index',
+        'create' => 'admin.roadmaps.create',
+        'store' => 'admin.roadmaps.store',
+        'show' => 'admin.roadmaps.show',
+        'edit' => 'admin.roadmaps.edit',
+        'update' => 'admin.roadmaps.update',
+        'destroy' => 'admin.roadmaps.destroy',
+    ]);
+
     Route::get('admin/profile', [\App\Http\Controllers\Admin\PortfolioProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::put('admin/profile', [\App\Http\Controllers\Admin\PortfolioProfileController::class, 'update'])->name('admin.profile.update');
     Route::get('admin/seo', [\App\Http\Controllers\Admin\SeoSettingController::class, 'index'])->name('admin.seo.index');

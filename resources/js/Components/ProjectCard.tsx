@@ -16,13 +16,14 @@ export const ProjectCard = ({ project }: { project: Project }) => (
   <Link 
     href={`/work/${project.slug || project.id}`} 
     id={`project-card-${project.slug || project.id}`}
-    className="relative cursor-pointer group flex flex-col h-full interactive bg-white dark:bg-[#111] border pf-border transition-all duration-200"
+    className="relative cursor-pointer group flex flex-col h-full bg-white dark:bg-[#111] border-2 border-black dark:border-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] transition-all duration-300"
   >
-    <div className="overflow-hidden mb-0 border-b pf-border">
+    <div className="overflow-hidden mb-0 border-b-2 border-black dark:border-white">
       <div
         className="aspect-square bg-cover bg-center transition-transform duration-500 ease-out group-hover:scale-[1.02] flex items-end p-6 relative"
         style={!project.image_path ? { backgroundColor: project.color } : {}}
       >
+
         {project.image_path ? (
            <>
              <img src={`/storage/${project.image_path}`} alt={project.title} className="absolute inset-0 w-full h-full object-cover" />

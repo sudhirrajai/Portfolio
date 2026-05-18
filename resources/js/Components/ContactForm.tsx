@@ -42,7 +42,8 @@ export const ContactForm: React.FC = () => {
 
   // Fully themeable, dark-mode ready inputs
   const inputBase =
-    'w-full bg-white dark:bg-[#111] border border-black dark:border-white/20 px-4 py-3 text-[15px] text-black dark:text-white focus:outline-none focus:bg-[#FFF8DC] dark:focus:bg-zinc-900 focus:border-[#FA76FF] dark:focus:border-[#FA76FF] transition-all duration-200';
+    'w-full bg-white dark:bg-[#111] border-2 border-black dark:border-white rounded-none px-4 py-3 text-[15px] text-black dark:text-white focus:outline-none focus:bg-[#FFF8DC] dark:focus:bg-zinc-900 focus:border-[#FA76FF] dark:focus:border-[#FA76FF] transition-all duration-200';
+
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
@@ -184,7 +185,7 @@ export const ContactForm: React.FC = () => {
       <button
         type="submit"
         disabled={processing}
-        className="relative overflow-hidden bg-black dark:bg-white text-white dark:text-black px-8 py-4 text-[11px] font-bold uppercase tracking-wider border border-black dark:border-white self-start group disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+        className="relative overflow-hidden bg-black dark:bg-white text-white dark:text-black px-8 py-4 text-[11px] font-bold uppercase tracking-wider border-2 border-black dark:border-white self-start group disabled:opacity-50 disabled:cursor-not-allowed shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] transition-all duration-300 active:scale-[0.98]"
       >
         <span className="relative z-10 group-hover:text-black transition-colors flex items-center gap-2">
           {processing ? 'Processing...' : 'Submit inquiry →'}
@@ -193,6 +194,7 @@ export const ContactForm: React.FC = () => {
           <span className="absolute inset-0 bg-[#FA76FF] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
         )}
       </button>
+
     </form>
   );
 };

@@ -182,8 +182,9 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
               >
                 <Link 
                   href={`/blog/${post.slug}`}
-                  className="group flex flex-col h-full border pf-border bg-white dark:bg-zinc-900/40 p-6 hover:bg-[#FFF8DC]/20 dark:hover:bg-[#121212]/40 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
+                  className="group flex flex-col h-full border-2 border-black dark:border-white bg-white dark:bg-zinc-900/40 p-6 hover:bg-[#FFF8DC]/20 dark:hover:bg-[#121212]/40 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] transition-all duration-300 relative overflow-hidden"
                 >
+
                   {/* Decorative Subtle Light Glow on hover */}
                   <div className="absolute -inset-y-0 -right-full w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[25deg] group-hover:animate-shine pointer-events-none" />
                   

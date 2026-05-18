@@ -112,18 +112,18 @@ export const BookingWidget = () => {
                 selectedDate.getMonth() === currentMonth.getMonth() &&
                 selectedDate.getFullYear() === currentMonth.getFullYear();
 
-            days.push(
+             days.push(
                 <button
                     key={`day-${dayNum}`}
                     type="button"
                     disabled={isPast}
                     onClick={() => setSelectedDate(loopDate)}
-                    className={`h-12 w-full rounded-xl font-medium text-sm flex items-center justify-center transition-all border
+                    className={`h-12 w-full rounded-none font-bold text-sm flex items-center justify-center transition-all border-2
                         ${isPast 
                             ? 'text-black/20 dark:text-white/10 border-transparent cursor-not-allowed' 
                             : isSelected
-                                ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white shadow-md scale-105 z-10'
-                                : 'bg-white/40 text-black border-transparent hover:border-black dark:bg-white/5 dark:text-white hover:bg-white/80 dark:hover:bg-white/10'
+                                ? 'bg-[#FA76FF] text-black border-black dark:border-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] scale-[1.02] z-10'
+                                : 'bg-white dark:bg-zinc-900 text-black dark:text-white border-black/10 dark:border-white/10 hover:border-black dark:hover:border-white hover:bg-[#FA76FF] hover:text-black hover:translate-y-[-1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
                         }`}
                 >
                     {dayNum}
@@ -135,8 +135,8 @@ export const BookingWidget = () => {
 
     if (bookedSession) {
         return (
-            <div className="border pf-border p-8 md:p-12 rounded-2xl text-center flex flex-col items-center justify-center bg-emerald-500/5 backdrop-blur-[2px]">
-                <div className="w-16 h-16 bg-[#3DDC97] text-black rounded-full flex items-center justify-center mb-6">
+            <div className="border-2 border-black dark:border-white p-8 md:p-12 rounded-none text-center flex flex-col items-center justify-center bg-white dark:bg-zinc-950 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]">
+                <div className="w-16 h-16 bg-[#3DDC97] text-black border-2 border-black rounded-none flex items-center justify-center mb-6 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                     <CheckCircle className="w-8 h-8" />
                 </div>
                 <h3 className="text-2xl font-bold mb-2">You're Booked!</h3>
@@ -144,7 +144,7 @@ export const BookingWidget = () => {
                     A discovery call with Sudhir Rajai is locked in. An invite has been dispatched to <strong className="text-black dark:text-white">{bookedSession.email}</strong>.
                 </p>
                 
-                <div className="bg-white dark:bg-white/5 border pf-border rounded-xl p-5 w-full max-w-sm text-left space-y-3 mb-8">
+                <div className="bg-white dark:bg-zinc-900 border-2 border-black dark:border-white rounded-none p-5 w-full max-w-sm text-left space-y-3 mb-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                     <div className="flex items-center gap-3 text-sm">
                         <Calendar className="w-4 h-4 text-[#ff6bff]" />
                         <span>{new Date(bookedSession.scheduled_at).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</span>
@@ -154,12 +154,12 @@ export const BookingWidget = () => {
                         <span>{new Date(bookedSession.scheduled_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })} ({Intl.DateTimeFormat().resolvedOptions().timeZone})</span>
                     </div>
                     {bookedSession.google_meet_url && (
-                        <div className="pt-3 border-t pf-border">
+                        <div className="pt-3 border-t-2 border-dashed border-black dark:border-white/20">
                             <a 
                                 href={bookedSession.google_meet_url}
                                 target="_blank" 
                                 rel="noreferrer"
-                                className="w-full py-2.5 text-center font-semibold text-xs uppercase bg-black text-white dark:bg-white dark:text-black rounded-lg transition-all flex items-center justify-center gap-2 hover:opacity-90"
+                                className="w-full py-2.5 text-center font-bold text-xs uppercase bg-black text-white dark:bg-white dark:text-black rounded-none border-2 border-black dark:border-white transition-all flex items-center justify-center gap-2 hover:translate-y-[-2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                             >
                                 Join Google Meet
                             </a>
@@ -187,7 +187,7 @@ export const BookingWidget = () => {
     }
 
     return (
-        <div className="border pf-border rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] bg-white/40 dark:bg-white/[0.01] backdrop-blur-[1px]">
+        <div className="border-2 border-black dark:border-white rounded-none overflow-hidden grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] bg-white dark:bg-zinc-950/80 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]">
             {/* Date Section */}
             <div className="p-6 md:p-8 border-b lg:border-b-0 lg:border-r pf-border flex flex-col">
                 <div className="flex items-center justify-between mb-6">
@@ -217,20 +217,20 @@ export const BookingWidget = () => {
             </div>
 
             {/* Slots / Form Section */}
-            <div className="p-6 md:p-8 bg-white/20 dark:bg-white/[0.02] flex flex-col min-h-[380px]">
+            <div className="p-6 md:p-8 bg-white dark:bg-zinc-900 flex flex-col min-h-[380px] border-t lg:border-t-0 lg:border-l border-2 border-black dark:border-white/20">
                 {!selectedDate ? (
                     <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-                        <div className="w-12 h-12 rounded-full border border-dashed border-black/20 dark:border-white/20 flex items-center justify-center mb-4 text-black/30 dark:text-white/30">
+                        <div className="w-12 h-12 rounded-none border-2 border-dashed border-black/30 dark:border-white/30 flex items-center justify-center mb-4 text-black/40 dark:text-white/40">
                             <Calendar className="w-5 h-5" />
                         </div>
-                        <p className="text-sm font-medium text-black/50 dark:text-white/40">
+                        <p className="text-sm font-bold text-black/50 dark:text-white/40">
                             Pick a date on the calendar grid to reveal available discovery hours.
                         </p>
                     </div>
                 ) : loadingSlots ? (
                     <div className="flex-1 flex flex-col items-center justify-center text-center">
                         <RefreshCcw className="w-6 h-6 text-[#ff6bff] animate-spin mb-3" />
-                        <span className="text-xs font-medium uppercase tracking-wider text-black/40 dark:text-white/40">Pulling vacancy logs...</span>
+                        <span className="text-xs font-bold uppercase tracking-wider text-black/40 dark:text-white/40">Pulling vacancy logs...</span>
                     </div>
                 ) : !showBookingForm ? (
                     <div className="flex flex-col h-full">
@@ -241,7 +241,7 @@ export const BookingWidget = () => {
 
                         {slots.length === 0 ? (
                             <div className="flex-1 flex flex-col items-center justify-center text-center">
-                                <p className="text-sm font-medium text-black/60 dark:text-white/50">
+                                <p className="text-sm font-bold text-black/60 dark:text-white/50">
                                     No vacancy windows detected on this date.
                                 </p>
                                 <p className="text-xs text-black/40 dark:text-white/30 mt-1">
@@ -250,7 +250,7 @@ export const BookingWidget = () => {
                             </div>
                         ) : (
                             <>
-                                <div className="grid grid-cols-2 gap-2.5 flex-1 overflow-y-auto max-h-[280px] pr-1">
+                                <div className="grid grid-cols-2 gap-3 flex-1 overflow-y-auto max-h-[280px] pr-1">
                                     {slots.map((slot) => {
                                         const isActive = selectedSlot === slot.time;
                                         return (
@@ -258,10 +258,10 @@ export const BookingWidget = () => {
                                                 key={slot.time}
                                                 type="button"
                                                 onClick={() => setSelectedSlot(slot.time)}
-                                                className={`py-3 rounded-xl text-xs font-semibold tracking-wider border transition-all 
+                                                className={`py-3 rounded-none text-xs font-bold tracking-wider border-2 transition-all 
                                                     ${isActive
-                                                        ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white scale-[1.02]'
-                                                        : 'bg-white/50 text-black border-transparent hover:border-black dark:bg-white/5 dark:text-white hover:bg-white/80 dark:hover:bg-white/10'
+                                                        ? 'bg-[#3DDC97] text-black border-black dark:border-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] scale-[1.01]'
+                                                        : 'bg-white dark:bg-zinc-950 text-black dark:text-white border-black dark:border-white/20 hover:border-black dark:hover:border-white hover:bg-[#FA76FF] hover:text-black hover:translate-y-[-1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
                                                     }`}
                                             >
                                                 {slot.label}
@@ -274,7 +274,7 @@ export const BookingWidget = () => {
                                     <button
                                         type="button"
                                         onClick={() => setShowBookingForm(true)}
-                                        className="w-full bg-[#ff6bff] text-black font-bold text-xs uppercase py-4 rounded-xl tracking-widest mt-6 hover:opacity-95 hover:translate-y-[-2px] active:translate-y-[0] shadow-lg shadow-[#ff6bff]/10 transition-all"
+                                        className="w-full bg-[#ff6bff] text-black font-bold text-xs uppercase py-4 rounded-none border-2 border-black dark:border-white tracking-widest mt-6 hover:translate-y-[-2px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-300"
                                     >
                                         Confirm Time Slot
                                     </button>
@@ -284,7 +284,7 @@ export const BookingWidget = () => {
                     </div>
                 ) : (
                     <form onSubmit={handleBookingSubmit} className="flex flex-col h-full">
-                        <div className="flex items-center justify-between mb-4 pb-3 border-b border-dashed pf-border">
+                        <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-dashed border-black dark:border-white/20">
                             <div>
                                 <h4 className="text-xs font-bold uppercase tracking-wider text-[#ff6bff]">Securing Slot</h4>
                                 <p className="text-sm font-bold mt-0.5">
@@ -300,7 +300,7 @@ export const BookingWidget = () => {
                             </button>
                         </div>
 
-                        <div className="space-y-3.5 flex-1">
+                        <div className="space-y-4 flex-1">
                             <div>
                                 <label className="block text-[10px] uppercase tracking-widest font-bold text-black/60 dark:text-white/50 mb-1.5 flex items-center gap-1.5">
                                     <User className="w-3 h-3 text-[#ff6bff]" /> Name
@@ -311,7 +311,7 @@ export const BookingWidget = () => {
                                     placeholder="e.g., Alex Doe"
                                     value={name}
                                     onChange={e => setName(e.target.value)}
-                                    className="w-full bg-white/60 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-[#ff6bff] focus:ring-0 outline-none text-black dark:text-white transition-all"
+                                    className="w-full bg-white dark:bg-zinc-950 border-2 border-black dark:border-white rounded-none px-4 py-2.5 text-sm focus:bg-[#FFF8DC] focus:border-[#FA76FF] outline-none text-black dark:text-white transition-all"
                                 />
                             </div>
 
@@ -325,7 +325,7 @@ export const BookingWidget = () => {
                                     placeholder="alex@example.com"
                                     value={email}
                                     onChange={e => setEmail(e.target.value)}
-                                    className="w-full bg-white/60 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-[#ff6bff] focus:ring-0 outline-none text-black dark:text-white transition-all"
+                                    className="w-full bg-white dark:bg-zinc-950 border-2 border-black dark:border-white rounded-none px-4 py-2.5 text-sm focus:bg-[#FFF8DC] focus:border-[#FA76FF] outline-none text-black dark:text-white transition-all"
                                 />
                             </div>
 
@@ -338,7 +338,7 @@ export const BookingWidget = () => {
                                     placeholder="Tell me briefly what we'll discuss!"
                                     value={notes}
                                     onChange={e => setNotes(e.target.value)}
-                                    className="w-full bg-white/60 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-[#ff6bff] focus:ring-0 outline-none text-black dark:text-white transition-all resize-none"
+                                    className="w-full bg-white dark:bg-zinc-950 border-2 border-black dark:border-white rounded-none px-4 py-2.5 text-sm focus:bg-[#FFF8DC] focus:border-[#FA76FF] outline-none text-black dark:text-white transition-all resize-none"
                                 />
                             </div>
                         </div>
@@ -346,7 +346,7 @@ export const BookingWidget = () => {
                         <button
                             type="submit"
                             disabled={bookingLoading}
-                            className="w-full bg-black text-white dark:bg-white dark:text-black font-bold text-xs uppercase py-4 rounded-xl tracking-widest mt-4 hover:opacity-90 active:scale-[0.99] flex items-center justify-center gap-2 shadow-md transition-all"
+                            className="w-full bg-black text-white dark:bg-white dark:text-black border-2 border-black dark:border-white font-bold text-xs uppercase py-4 rounded-none tracking-widest mt-6 hover:translate-y-[-2px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center gap-2 transition-all duration-300"
                         >
                             {bookingLoading ? (
                                 <>

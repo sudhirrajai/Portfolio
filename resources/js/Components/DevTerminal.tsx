@@ -160,10 +160,11 @@ export const DevTerminal: React.FC<DevTerminalProps> = ({ profile }) => {
         transition={{ duration: 0.5 }}
       >
         {/* Terminal Window */}
-        <div className="border-2 border-black dark:border-white/20 bg-[#0f172a] rounded-sm overflow-hidden">
+        <div className="border-2 border-black dark:border-white bg-[#0f172a] rounded-sm overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] transition-all duration-300">
           
           {/* Terminal Top Bar */}
-          <div className="bg-[#1e293b] border-b-2 border-black dark:border-white/20 px-4 py-3 flex items-center justify-between">
+          <div className="bg-[#1e293b] border-b-2 border-black dark:border-white px-4 py-3 flex items-center justify-between">
+
             <div className="flex items-center gap-2">
               <div className="size-3 rounded-full border-2 border-black bg-rose-500" />
               <div className="size-3 rounded-full border-2 border-black bg-amber-400" />

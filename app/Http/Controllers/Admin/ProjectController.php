@@ -37,11 +37,15 @@ class ProjectController extends Controller
         }
 
         $request->merge([
-            'is_featured' => filter_var($request->input('is_featured'), FILTER_VALIDATE_BOOLEAN)
+            'is_featured' => filter_var($request->input('is_featured'), FILTER_VALIDATE_BOOLEAN),
+            'is_open_source' => filter_var($request->input('is_open_source'), FILTER_VALIDATE_BOOLEAN)
         ]);
 
         $validated = $request->validate([
             'is_featured' => 'nullable|boolean',
+            'is_open_source' => 'nullable|boolean',
+            'github_url' => 'nullable|string|max:255',
+            'open_source_content' => 'nullable|string',
             'title' => 'required|string|max:255',
             'year' => 'required|string|max:4',
             'summary' => 'required|string',
@@ -50,6 +54,7 @@ class ProjectController extends Controller
             'color' => 'required|string',
             'image' => 'nullable|image|max:2048',
         ]);
+
 
         if ($request->hasFile('image')) {
             $validated['image_path'] = $request->file('image')->store('projects', 'public');
@@ -85,11 +90,15 @@ class ProjectController extends Controller
         }
 
         $request->merge([
-            'is_featured' => filter_var($request->input('is_featured'), FILTER_VALIDATE_BOOLEAN)
+            'is_featured' => filter_var($request->input('is_featured'), FILTER_VALIDATE_BOOLEAN),
+            'is_open_source' => filter_var($request->input('is_open_source'), FILTER_VALIDATE_BOOLEAN)
         ]);
 
         $validated = $request->validate([
             'is_featured' => 'nullable|boolean',
+            'is_open_source' => 'nullable|boolean',
+            'github_url' => 'nullable|string|max:255',
+            'open_source_content' => 'nullable|string',
             'title' => 'required|string|max:255',
             'year' => 'required|string|max:4',
             'summary' => 'required|string',
@@ -98,6 +107,7 @@ class ProjectController extends Controller
             'color' => 'required|string',
             'image' => 'nullable|image|max:2048',
         ]);
+
 
         if ($request->hasFile('image')) {
             if ($project->image_path) {

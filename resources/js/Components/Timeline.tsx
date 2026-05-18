@@ -90,7 +90,8 @@ export const Timeline: React.FC<TimelineProps> = ({ experience = [], education =
         </div>
 
         {/* Tab Filters */}
-        <div className="flex border pf-border bg-white dark:bg-[#111] p-1.5 rounded-sm self-start md:self-auto">
+        <div className="flex border-2 border-black dark:border-white bg-white dark:bg-[#111] p-1.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-sm self-start md:self-auto">
+
           {(['all', 'experience', 'education'] as const).map((tab) => (
             <button
               key={tab}
@@ -163,10 +164,11 @@ export const Timeline: React.FC<TimelineProps> = ({ experience = [], education =
                   >
                     <div 
                       onClick={() => item.bullets && item.bullets.length > 0 && toggleExpand(uniqueId)}
-                      className={`group border pf-border bg-white dark:bg-zinc-900/40 p-6 md:p-8 hover:-translate-y-1 transition-all duration-300 relative rounded-sm ${
+                      className={`group border-2 border-black dark:border-white bg-white dark:bg-zinc-900/40 p-6 md:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] transition-all duration-300 relative rounded-sm ${
                         item.bullets && item.bullets.length > 0 ? 'cursor-pointer select-none' : ''
                       }`}
                     >
+
                       {/* Event Type Icon badge */}
                       <div className="absolute top-6 right-6 opacity-20 group-hover:opacity-40 transition-opacity">
                         {item.type === 'experience' ? (

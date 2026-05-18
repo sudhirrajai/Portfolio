@@ -11,14 +11,15 @@ const ContactRow = ({ label, value, href }: { label: string; value: string; href
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="group flex items-center justify-between border-b border-black dark:border-white/30 py-5 md:py-6 hover:bg-[#FA76FF] hover:text-black transition-colors px-2"
+    className="group flex items-center justify-between border-b border-black dark:border-white/30 last:border-b-0 py-5 md:py-6 hover:bg-[#FA76FF] hover:text-black transition-all px-6"
   >
-    <span className="text-[11px] font-medium uppercase">{label}</span>
+    <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 group-hover:text-black/60">{label}</span>
     <span className="text-lg md:text-2xl font-medium tracking-[-0.5px] group-hover:translate-x-[-6px] transition-transform">
       {value} →
     </span>
   </a>
 );
+
 
 const Contact = ({ profile, isBookingActive }) => {
   if (!profile) return null;
@@ -70,7 +71,7 @@ const Contact = ({ profile, isBookingActive }) => {
             };
 
             return (
-              <div className={hasChannels ? "grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-12 md:gap-16" : "max-w-2xl mx-auto"}>
+              <div className={hasChannels ? "grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-12 md:gap-16 items-start" : "max-w-2xl mx-auto"}>
                 {/* Form */}
                 <div>
                   <div className="flex items-center gap-2 mb-8">
@@ -87,7 +88,7 @@ const Contact = ({ profile, isBookingActive }) => {
                       <hr className="flex-1 pf-hr" />
                       <h2 className="text-[11px] font-medium uppercase">Or reach me directly</h2>
                     </div>
-                    <div className="border-t pf-border">
+                    <div className="border-2 border-black dark:border-white bg-white dark:bg-zinc-950 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] rounded-sm overflow-hidden">
                       {profile.email && (
                         <ContactRow label="Email" value={profile.email} href={`mailto:${profile.email}`} />
                       )}

@@ -37,12 +37,12 @@ const Blog = ({ blogs }) => {
             </p>
           </div>
 
-          <div className="border-t pf-border">
+          <div className="flex flex-col gap-8">
             {visibleBlogs.map((post) => (
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="group grid grid-cols-1 md:grid-cols-[120px_1fr] lg:grid-cols-[120px_1fr_240px] gap-6 md:gap-8 items-start lg:items-center border-b pf-border py-8 md:py-12 px-2 hover:bg-[#FFF8DC]/30 dark:hover:bg-[#121212]/30 transition-all duration-300"
+                className="group grid grid-cols-1 md:grid-cols-[120px_1fr] lg:grid-cols-[120px_1fr_240px] gap-6 md:gap-8 items-start lg:items-center border-2 border-black dark:border-white bg-white dark:bg-zinc-900/40 p-6 md:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] transition-all duration-300 rounded-sm"
               >
                 {/* Date Block */}
                 <div className="text-[11px] font-bold uppercase text-gray-500 dark:text-gray-400 md:pt-1">
@@ -70,8 +70,9 @@ const Blog = ({ blogs }) => {
 
                 {/* Featured Visual Frame (Now High Impact 16:10 Banner) */}
                 <div
-                  className="relative w-full aspect-[16/10] lg:w-[240px] lg:h-[150px] border pf-border overflow-hidden bg-white dark:bg-zinc-950 group-hover:border-black dark:group-hover:border-white/50 group-hover:-translate-y-1 transition-all duration-300 rounded-sm flex-shrink-0"
+                  className="relative w-full aspect-[16/10] lg:w-[240px] lg:h-[150px] border-2 border-black dark:border-white overflow-hidden bg-white dark:bg-zinc-950 transition-all duration-300 rounded-sm flex-shrink-0"
                 >
+
                   {post.image_path ? (
                     <img 
                       src={`/storage/${post.image_path}`} 

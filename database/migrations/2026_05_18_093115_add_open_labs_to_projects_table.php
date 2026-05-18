@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('projects', function (Blueprint $table) {
+            $table->boolean('is_open_source')->default(false)->after('is_featured');
+            $table->string('github_url')->nullable()->after('is_open_source');
+            $table->text('open_source_content')->nullable()->after('github_url');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('projects', function (Blueprint $table) {
+            $table->dropColumn(['is_open_source', 'github_url', 'open_source_content']);
+        });
+    }
+};

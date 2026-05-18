@@ -3,6 +3,69 @@ import { Link, router } from "@inertiajs/react";
 import { Navbar } from '@/Components/Navbar';
 import { SEOHead } from '@/Components/SEOHead';
 
+const renderMarkdown = (content: string) => {
+  if (!content) return null;
+  const lines = content.split('\n');
+  let inCodeBlock = false;
+  let codeLines: string[] = [];
+  const elements: React.ReactNode[] = [];
+
+  lines.forEach((line, index) => {
+    // Code block check
+    if (line.trim().startsWith('```')) {
+      if (inCodeBlock) {
+        inCodeBlock = false;
+        const codeText = codeLines.join('\n');
+        codeLines = [];
+        elements.push(
+          <pre key={`code-${index}`} className="bg-zinc-950 text-[#FA76FF] font-mono text-xs p-4 rounded-sm border-2 border-black dark:border-white overflow-x-auto shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(250,118,255,1)] my-3">
+            <code>{codeText}</code>
+          </pre>
+        );
+      } else {
+        inCodeBlock = true;
+      }
+      return;
+    }
+
+    if (inCodeBlock) {
+      codeLines.push(line);
+      return;
+    }
+
+    // Headers
+    if (line.startsWith('#### ')) {
+      elements.push(<h4 key={index} className="text-sm font-bold uppercase tracking-wider text-black dark:text-white mt-4">{line.replace('#### ', '')}</h4>);
+      return;
+    }
+    if (line.startsWith('### ')) {
+      elements.push(<h3 key={index} className="text-lg font-bold text-black dark:text-white mt-4">{line.replace('### ', '')}</h3>);
+      return;
+    }
+
+    // Bullet points
+    if (line.startsWith('- ') || line.startsWith('* ')) {
+      elements.push(
+        <div key={index} className="flex gap-2 items-start pl-2">
+          <span className="text-emerald-500 font-bold">•</span>
+          <span>{line.substring(2)}</span>
+        </div>
+      );
+      return;
+    }
+
+    // Empty line
+    if (!line.trim()) {
+      elements.push(<div key={index} className="h-2" />);
+      return;
+    }
+
+    elements.push(<p key={index} className="font-normal">{line}</p>);
+  });
+
+  return elements;
+};
+
 const ProjectDetail = ({ project }) => {
   if (!project) {
     return (
@@ -59,8 +122,8 @@ const ProjectDetail = ({ project }) => {
         </div>
 
         {/* Sidebar Details */}
-        <aside className="flex w-[540px] flex-col justify-start items-start fixed h-screen box-border right-0 top-0 bg-white dark:bg-[#111] text-black dark:text-white overflow-y-auto border-l pf-border-soft max-lg:relative max-lg:w-full max-lg:h-auto max-lg:right-auto max-lg:top-0 max-lg:overflow-y-visible transition-colors duration-300">
-          <div className="flex w-full flex-col items-start gap-10 relative p-10 pb-32 max-lg:w-full max-lg:px-6 max-lg:py-8 max-lg:pb-10 max-lg:gap-8 opacity-0 animate-fade-in [animation-delay:200ms]">
+        <aside className="flex w-[540px] flex-col justify-start items-start fixed h-screen box-border right-0 top-0 bg-white dark:bg-[#111] text-black dark:text-white overflow-y-auto border-l pf-border-soft max-lg:relative max-lg:w-full max-lg:h-auto max-lg:right-auto max-lg:top-0 max-lg:overflow-y-visible transition-colors duration-300 pb-44">
+          <div className="flex w-full flex-col items-start gap-10 relative p-10 max-lg:w-full max-lg:px-6 max-lg:py-8 max-lg:gap-8 opacity-0 animate-fade-in [animation-delay:200ms]">
             
             {/* Header Block */}
             <div className="flex flex-col items-start gap-5 self-stretch relative">
@@ -68,9 +131,15 @@ const ProjectDetail = ({ project }) => {
                 <div className="pf-badge px-3 h-[23px]">
                   <div className="text-[10px] font-bold uppercase tracking-wider leading-none">{project.year}</div>
                 </div>
-                <div className="pf-badge px-3 h-[23px]">
-                  <div className="text-[10px] font-bold uppercase tracking-wider leading-none text-indigo-600 dark:text-indigo-400">Portfolio</div>
-                </div>
+                {project.is_open_source ? (
+                  <div className="pf-badge px-3 h-[23px] bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/40">
+                    <div className="text-[10px] font-bold uppercase tracking-wider leading-none">Open Source</div>
+                  </div>
+                ) : (
+                  <div className="pf-badge px-3 h-[23px]">
+                    <div className="text-[10px] font-bold uppercase tracking-wider leading-none text-indigo-600 dark:text-indigo-400">Portfolio</div>
+                  </div>
+                )}
               </div>
               <header>
                 <h1 className="pf-heading leading-[54.88px] text-[56px] max-md:text-[42px] max-md:leading-[38px] max-md:tracking-[-1.68px] max-sm:text-[36px] max-sm:leading-[32px] max-sm:tracking-[-1.28px]">
@@ -111,17 +180,44 @@ const ProjectDetail = ({ project }) => {
                 ))}
               </ul>
             </section>
+
+            {/* Open Source Detailed Documentation */}
+            {project.is_open_source && project.open_source_content && (
+              <section className="flex flex-col items-start gap-4 self-stretch">
+                <div className="flex flex-col items-start gap-4 self-stretch w-full">
+                  <hr className="pf-hr w-full" />
+                  <h2 className="text-emerald-600 dark:text-emerald-400 text-[11px] font-bold uppercase tracking-wider">LABS / GETTING STARTED</h2>
+                </div>
+                <div className="self-stretch flex flex-col gap-3.5 text-gray-800 dark:text-gray-300 text-[15px] font-normal leading-relaxed tracking-[-0.2px]">
+                  {renderMarkdown(project.open_source_content)}
+                </div>
+              </section>
+            )}
           </div>
 
-          {/* Fixed Footer Navigation */}
-          <div className="fixed bottom-0 right-0 w-[540px] bg-white dark:bg-[#111] py-6 border-t pf-border-soft z-30 max-lg:relative max-lg:w-full max-lg:py-6 max-lg:border-t max-lg:bg-transparent max-lg:dark:bg-transparent max-lg:border-none">
-            <div className="px-10 max-lg:px-6">
+          {/* Sticky Footer Actions */}
+          <div className="fixed bottom-0 right-0 w-[540px] bg-white/95 dark:bg-[#111]/95 backdrop-blur-sm py-6 border-t pf-border-soft z-30 max-lg:relative max-lg:w-full max-lg:py-6 max-lg:border-t max-lg:bg-transparent max-lg:dark:bg-transparent max-lg:border-none">
+            <div className="px-10 max-lg:px-6 flex flex-col gap-3">
+              {project.github_url && (
+                <a
+                  href={project.github_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 border-2 border-black dark:border-white text-[11px] font-bold uppercase tracking-widest bg-[#3DDC97] text-black hover:bg-[#32c485] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] transition-all duration-300 active:scale-[0.97]"
+                >
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                  </svg>
+                  Get Source Code on GitHub
+                </a>
+              )}
               <Link
                 href="/"
-                className="pf-btn w-full group"
+                className="w-full flex items-center justify-center gap-1.5 py-3 border-2 border-black dark:border-white text-[11px] font-bold uppercase tracking-widest hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]"
               >
-                <span className="group-hover:-translate-x-1 transition-transform mr-1.5">←</span> Back to all work
+                <span>←</span> Back to all work
               </Link>
+
             </div>
           </div>
         </aside>

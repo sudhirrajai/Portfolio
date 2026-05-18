@@ -55,6 +55,7 @@ class DatabaseSeeder extends Seeder
         $projects = [
             [
                 'title' => 'Nimbus',
+                'slug' => 'nimbus',
                 'year' => '2025',
                 'stack' => ['Laravel', 'Vue.js', 'Inertia.js'],
                 'summary' => 'A self-hosted VPS control panel to manage domains, files, PHP, Nginx, cron, databases & backups from a unified dashboard.',
@@ -64,9 +65,13 @@ class DatabaseSeeder extends Seeder
                     'Designed modular architecture using Laravel + Vue.js + Inertia.js for clean separation of concerns and extensibility.',
                 ],
                 'color' => '#FA76FF',
+                'is_open_source' => true,
+                'github_url' => 'https://github.com/sudhirrajai/nimbus',
+                'open_source_content' => "### Getting Started with Nimbus\n\nNimbus is a secure, light-weight VPS panel designed for self-hosters and developers. \n\n#### Prerequisites\n- A clean VPS running Ubuntu 22.04 LTS or 24.04 LTS.\n- Minimum 1GB RAM / 1 vCPU.\n\n#### Installation CLI\nRun this direct install command on your target VPS server:\n```bash\ncurl -sS https://raw.githubusercontent.com/sudhirrajai/nimbus/main/install.sh | bash\n```\n\n#### Core Features\n1. **Dynamic Nginx Proxy:** Auto-configure virtual hosts, TLS certificates with Let's Encrypt, and secure redirection logs.\n2. **Database Management:** Instantly spin up MySQL or PostgreSQL databases with hourly automated backups.\n3. **Supervisor Dials:** Manage and monitor Laravel queues, Horizon, and WebSocket servers live."
             ],
             [
                 'title' => 'LaraSafe',
+                'slug' => 'larasafe',
                 'year' => '2025',
                 'stack' => ['Laravel', 'Vue.js', 'Inertia.js'],
                 'summary' => 'Automated project backup tool with full / files-only / DB-only modes and configurable scheduling.',
@@ -76,9 +81,13 @@ class DatabaseSeeder extends Seeder
                     'Built a clean admin UI for managing backup configurations, schedules, and restore operations.',
                 ],
                 'color' => '#FFD23F',
+                'is_open_source' => true,
+                'github_url' => 'https://github.com/sudhirrajai/larasafe',
+                'open_source_content' => "### Setup & Installation\n\nIntegrate LaraSafe seamlessly in your existing Laravel application using Composer.\n\n```bash\ncomposer require sudhirrajai/larasafe\n```\n\nPublish assets & run the migration script:\n```bash\nphp artisan larasafe:install\n```\n\n#### Backup Configuration example:\nDefine your destinations inside `config/larasafe.php`:\n```php\nreturn [\n    'driver' => 's3',\n    'destinations' => [\n        's3' => [\n            'bucket' => env('LARASAFE_S3_BUCKET'),\n        ],\n    ],\n];\n```"
             ],
             [
                 'title' => 'CRM — Client Management',
+                'slug' => 'crm-client-management',
                 'year' => '2025',
                 'stack' => ['Laravel', 'Vue.js', 'Inertia.js', 'Reverb'],
                 'summary' => 'Full-featured CRM with automation, Kanban boards, real-time team chat and financial reporting.',
@@ -92,6 +101,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'title' => 'Village On Web',
+                'slug' => 'village-on-web',
                 'year' => '2024',
                 'stack' => ['PHP', 'Bootstrap', 'MySQL'],
                 'summary' => 'Web application to digitalize village data with automated multi-database support per village.',
@@ -103,6 +113,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'title' => 'TILD',
+                'slug' => 'tild',
                 'year' => '2024',
                 'stack' => ['PHP', 'Bootstrap', 'MySQL'],
                 'summary' => 'Interactive UI and admin panel with consistent responsive performance across devices.',
@@ -114,6 +125,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'title' => 'Quick Transport',
+                'slug' => 'quick-transport',
                 'year' => '2022',
                 'stack' => ['PHP', 'Bootstrap', 'MySQL'],
                 'summary' => 'Logistics platform allowing users to post goods and hire trucks, with a full admin dashboard.',
@@ -124,6 +136,7 @@ class DatabaseSeeder extends Seeder
                 'color' => '#A78BFA',
             ],
         ];
+
 
         foreach ($projects as $project) {
             \App\Models\Project::create($project);
@@ -240,5 +253,49 @@ class DatabaseSeeder extends Seeder
             'work_hours_end' => '17:00:00',
             'slot_duration' => 30,
         ]);
+
+        // Seed default roadmap milestones
+        $roadmaps = [
+            [
+                'phase' => 'Now',
+                'title' => 'Container Orchestration & CI/CD',
+                'description' => 'Deep diving into Kubernetes orchestration, Helm charts, and building secure self-hosted GitLab/GitHub Action CI/CD pipelines.',
+                'tags' => ['Kubernetes', 'Helm', 'CI/CD'],
+                'order_weight' => 1
+            ],
+            [
+                'phase' => 'Now',
+                'title' => 'LaraSafe Feature Expansion',
+                'description' => 'Integrating automated database restoration, encrypted backups, and custom Slack/Discord webhook status alerts.',
+                'tags' => ['Laravel', 'Security'],
+                'order_weight' => 2
+            ],
+            [
+                'phase' => 'Next',
+                'title' => 'System Utilities in Rust',
+                'description' => 'Exploring Rust development to build highly performant system-level backup utilities and file watchers.',
+                'tags' => ['Rust', 'Systems Programming'],
+                'order_weight' => 3
+            ],
+            [
+                'phase' => 'Next',
+                'title' => 'Modular SaaS Architecture',
+                'description' => 'Designing a lightweight, multi-tenant Laravel SaaS template featuring single-database tenancy and Stripe billing modules.',
+                'tags' => ['SaaS', 'Stripe'],
+                'order_weight' => 4
+            ],
+            [
+                'phase' => 'Future',
+                'title' => 'AWS Certified Solutions Architect',
+                'description' => 'Studying to obtain AWS solutions architect certification to build robust enterprise-grade cloud architectures.',
+                'tags' => ['AWS', 'Cloud Architecture'],
+                'order_weight' => 5
+            ]
+        ];
+
+        foreach ($roadmaps as $road) {
+            \App\Models\Roadmap::create($road);
+        }
     }
 }
+
