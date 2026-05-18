@@ -147,7 +147,7 @@ const ProjectDetail = ({ project }) => {
                 </h1>
               </header>
               <div className="text-gray-500 dark:text-gray-400 text-[11px] font-bold uppercase tracking-wide">
-                {project.stack.join(' • ')}
+                {(project.stack || []).join(' • ')}
               </div>
             </div>
 
@@ -169,7 +169,7 @@ const ProjectDetail = ({ project }) => {
                 <h2 className="text-indigo-600 dark:text-indigo-400 text-[11px] font-bold uppercase tracking-wider">HIGHLIGHTS & ACHIEVEMENTS</h2>
               </div>
               <ul className="self-stretch flex flex-col gap-3.5">
-                {project.highlights.map((h, i) => (
+                {(project.highlights || []).map((h, i) => (
                   <li
                     key={i}
                     className="text-gray-800 dark:text-gray-300 text-[16px] font-normal leading-relaxed tracking-[-0.2px] pl-6 relative"

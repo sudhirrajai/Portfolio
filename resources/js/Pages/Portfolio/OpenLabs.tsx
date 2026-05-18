@@ -70,7 +70,7 @@ const OpenLabs = ({ labs }: { labs: LabProject[] }) => {
 
                     {/* Stack tags */}
                     <div className="flex flex-wrap gap-1.5 mb-4">
-                      {p.stack.map((tag) => (
+                      {(p.stack || []).map((tag) => (
                         <span 
                           key={tag} 
                           className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 border border-black/10 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900"
