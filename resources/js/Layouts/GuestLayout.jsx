@@ -23,7 +23,7 @@ export default function GuestLayout({ children }) {
                 
                 {/* Footer credit link */}
                 <p className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
-                    &copy; {new Date().getFullYear()} All rights reserved. Powered by Laravel & Inertia.
+                    &copy; {new Date().getFullYear()} Sudhir Rajai. All rights reserved.
                 </p>
 
             </div>
