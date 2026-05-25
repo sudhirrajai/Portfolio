@@ -35,7 +35,26 @@ class PortfolioProfileController extends Controller
             'working_hours_end' => 'required|string|max:5',
             'linkedin' => 'nullable|url|max:255',
             'github' => 'nullable|url|max:255',
+            'resume' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
         ]);
+
+        if ($request->hasFile('resume')) {
+            $file = $request->file('resume');
+            $filename = 'resume_' . time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('uploads/resumes');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            $file->move($destinationPath, $filename);
+
+            // Delete old resume file if exists
+            if ($profile->resume_path && file_exists(public_path($profile->resume_path))) {
+                @unlink(public_path($profile->resume_path));
+            }
+
+            $profile->resume_path = 'uploads/resumes/' . $filename;
+            $profile->save();
+        }
 
         // Inject flattened inputs into the social_links JSON structure
         $socialLinks = [
@@ -43,7 +62,7 @@ class PortfolioProfileController extends Controller
             'linkedin' => $request->input('linkedin'),
         ];
         
-        $updateData = array_diff_key($validated, array_flip(['linkedin', 'github']));
+        $updateData = array_diff_key($validated, array_flip(['linkedin', 'github', 'resume']));
         $updateData['social_links'] = $socialLinks;
 
         $profile->update($updateData);

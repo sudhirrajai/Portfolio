@@ -19,9 +19,24 @@ const About = ({ profile, experience, education, skills }) => {
           <h1 className="pf-heading mb-6">
             About me.
           </h1>
-          <p className="pf-excerpt mb-16 md:mb-20">
+          <p className="pf-excerpt mb-8">
             {profile.summary}
           </p>
+
+          {profile.resume_path && (
+            <div className="mb-16 md:mb-20">
+              <a 
+                href={`/${profile.resume_path}`}
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 text-[11px] uppercase font-bold tracking-widest border-2 border-black dark:border-white px-8 py-3.5 bg-black text-white dark:bg-white dark:text-black hover:bg-transparent hover:text-black dark:hover:bg-transparent dark:hover:text-white transition-all duration-300 active:scale-[0.98] shadow-[4px_4px_0px_0px_rgba(250,118,255,1)] dark:shadow-[4px_4px_0px_0px_rgba(250,118,255,1)]"
+              >
+                <span>Download Active Resume</span>
+                <span className="text-[14px] leading-none">↓</span>
+              </a>
+            </div>
+          )}
 
           {/* Skills */}
           <section className="mb-16 md:mb-20">

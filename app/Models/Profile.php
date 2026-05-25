@@ -8,7 +8,8 @@ class Profile extends Model
 {
     protected $fillable = [
         'name', 'role', 'tagline', 'summary', 'email', 'phone', 'location', 
-        'social_links', 'is_available', 'working_hours_start', 'working_hours_end'
+        'social_links', 'is_available', 'working_hours_start', 'working_hours_end',
+        'resume_path'
     ];
 
     protected $casts = [

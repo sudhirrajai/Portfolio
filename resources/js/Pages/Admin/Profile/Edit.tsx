@@ -2,10 +2,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
 import React from 'react';
 import { toast } from 'sonner';
-import { User, MapPin, Mail, Phone, Clock, ShieldAlert, Save } from 'lucide-react';
+import { User, MapPin, Mail, Phone, Clock, ShieldAlert, Save, FileText, Download } from 'lucide-react';
 
 export default function ProfileEdit({ profile }) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         name: profile?.name || '',
         role: profile?.role || '',
         tagline: profile?.tagline || '',
@@ -18,11 +18,14 @@ export default function ProfileEdit({ profile }) {
         working_hours_end: profile?.working_hours_end || '18:00',
         linkedin: profile?.social_links?.linkedin || '',
         github: profile?.social_links?.github || '',
+        resume: null,
+        _method: 'PUT'
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        put(route('admin.profile.update'), {
+        post(route('admin.profile.update'), {
+            forceFormData: true,
             preserveScroll: true,
             onSuccess: () => toast.success('Portfolio profile details updated!'),
             onError: () => toast.error('Failed to save updates. Please review errors.')
@@ -265,6 +268,55 @@ export default function ProfileEdit({ profile }) {
                                         placeholder="https://github.com/yourname"
                                     />
                                     {errors.github && <p className="text-red-500 text-xs mt-1">{errors.github}</p>}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Resume Document Card */}
+                        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden">
+                            <div className="p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 flex items-center justify-center">
+                                    <FileText className="w-5 h-5" />
+                                </div>
+                                <h3 className="text-base font-semibold text-gray-900 dark:text-white">Resume Document</h3>
+                            </div>
+                            
+                            <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <label className={labelStyle}>Upload New Resume (PDF, DOC, DOCX - Max 10MB)</label>
+                                    <input
+                                        type="file"
+                                        onChange={(e) => setData('resume', e.target.files?.[0] || null)}
+                                        className="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 dark:file:bg-zinc-800 file:text-indigo-700 dark:file:text-indigo-300 hover:file:bg-indigo-100 dark:hover:file:bg-zinc-700 cursor-pointer transition-all"
+                                        accept=".pdf,.doc,.docx"
+                                    />
+                                    {errors.resume && <p className="text-red-500 text-xs mt-1">{errors.resume}</p>}
+                                </div>
+
+                                <div className="flex flex-col justify-center">
+                                    {profile?.resume_path ? (
+                                        <div className="p-4 bg-emerald-50/40 dark:bg-emerald-950/10 border border-emerald-100/50 dark:border-emerald-900/30 rounded-2xl flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                                                <Download className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <h4 className="text-xs font-semibold text-gray-900 dark:text-white">Active Resume Document</h4>
+                                                <a 
+                                                    href={`/${profile.resume_path}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer" 
+                                                    className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium mt-0.5 inline-block"
+                                                >
+                                                    View / Download Active Document
+                                                </a>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="p-4 bg-amber-50/40 dark:bg-amber-950/10 border border-amber-100/50 dark:border-amber-900/30 rounded-2xl flex items-center gap-3 text-amber-600 dark:text-amber-400">
+                                            <ShieldAlert className="w-5 h-5" />
+                                            <span className="text-xs font-semibold">No resume uploaded yet.</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

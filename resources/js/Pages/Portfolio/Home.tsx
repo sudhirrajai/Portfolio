@@ -82,6 +82,24 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
           >
             {profile.summary}
           </motion.p>
+          {profile.resume_path && (
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="mt-8 flex justify-center"
+            >
+              <a 
+                href={`/${profile.resume_path}`}
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 text-[11px] uppercase font-bold tracking-widest border-2 border-black dark:border-white px-6 py-3 bg-black text-white dark:bg-white dark:text-black hover:bg-transparent hover:text-black dark:hover:bg-transparent dark:hover:text-white transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(255,107,255,1)] active:scale-[0.98]"
+              >
+                Download Resume <ArrowDown className="size-3.5" />
+              </a>
+            </motion.div>
+          )}
         </div>
       </section>
 
