@@ -398,7 +398,7 @@ export default function Index({ auth, bookings, settings, isGoogleConnected, goo
                                                 </p>
                                             </div>
                                             <div className="pt-2">
-                                                <a
+                                                <Link
                                                     href={route('admin.google.connect')}
                                                     className="w-full py-2.5 text-center text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all inline-flex items-center justify-center gap-2 shadow-sm shadow-blue-500/10"
                                                 >
@@ -409,7 +409,7 @@ export default function Index({ auth, bookings, settings, isGoogleConnected, goo
                                                         <path fill="currentColor" d="M12,4.75c1.77,0 3.35,0.61 4.6,1.8l3.42,-3.42C17.93,1.19 15.22,0 12,0 7.34,0 3.37,2.56 1.65,6.44l3.48,2.7C5.95,6.6 8.27,4.75 12,4.75z"/>
                                                     </svg>
                                                     Connect Google Account
-                                                </a>
+                                                </Link>
                                             </div>
                                         </>
                                     )}
