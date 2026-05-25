@@ -40,17 +40,24 @@ class PortfolioProfileController extends Controller
 
         if ($request->hasFile('resume')) {
             $file = $request->file('resume');
-            $filename = 'resume_' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'SudhirRajai_Resume.' . $file->getClientOriginalExtension();
             $destinationPath = public_path('uploads/resumes');
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0755, true);
             }
-            $file->move($destinationPath, $filename);
 
-            // Delete old resume file if exists
+            // 1. Delete old active resume file if exists in database
             if ($profile->resume_path && file_exists(public_path($profile->resume_path))) {
                 @unlink(public_path($profile->resume_path));
             }
+
+            // 2. Explicitly ensure any existing file with this exact new filename is removed
+            $targetFilePath = $destinationPath . '/' . $filename;
+            if (file_exists($targetFilePath)) {
+                @unlink($targetFilePath);
+            }
+
+            $file->move($destinationPath, $filename);
 
             $profile->resume_path = 'uploads/resumes/' . $filename;
             $profile->save();
