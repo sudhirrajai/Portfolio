@@ -154,9 +154,24 @@ class ContactController extends Controller
             'message' => $validated['message'],
         ]);
 
-        // Dispatch e-mail alert with try-catch fallback (if SMTP isn't configured yet)
+        // Dispatch e-mail alert with try-catch fallback (using DB SMTP config if present)
         try {
-            $adminEmail = Profile::first()?->email ?? config('mail.from.address');
+            $smtp = \App\Models\SmtpSetting::first();
+            if ($smtp && !empty($smtp->host)) {
+                config([
+                    'mail.default' => 'smtp',
+                    'mail.mailers.smtp.host' => $smtp->host,
+                    'mail.mailers.smtp.port' => (int)$smtp->port,
+                    'mail.mailers.smtp.username' => $smtp->username,
+                    'mail.mailers.smtp.password' => $smtp->password,
+                    'mail.mailers.smtp.encryption' => $smtp->encryption,
+                    'mail.from.address' => $smtp->from_address,
+                    'mail.from.name' => $smtp->from_name,
+                ]);
+                app()->make('mail.manager')->forgetMailers();
+            }
+
+            $adminEmail = Profile::first()?->email ?? \App\Models\User::first()?->email ?? config('mail.from.address');
             if ($adminEmail) {
                 Mail::to($adminEmail)->send(new ContactInquiryReceived($msg));
             }

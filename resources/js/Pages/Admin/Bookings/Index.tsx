@@ -25,6 +25,8 @@ export default function Index({ auth, bookings, settings, isGoogleConnected, goo
         work_hours_start: settings?.work_hours_start || '09:00:00',
         work_hours_end: settings?.work_hours_end || '17:00:00',
         slot_duration: settings?.slot_duration || 30,
+        google_client_id: settings?.google_client_id || '',
+        google_client_secret: settings?.google_client_secret || '',
     });
 
     const handleDayToggle = (day) => {
@@ -343,6 +345,70 @@ export default function Index({ auth, bookings, settings, isGoogleConnected, goo
                                             className="bg-indigo-600 text-white font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-indigo-700 transition-all disabled:opacity-50 shadow-sm"
                                         >
                                             {processing ? 'Saving Hours...' : 'Save Availability Hours'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            {/* Google API Integration Configuration Card */}
+                            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm rounded-xl overflow-hidden">
+                                <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Google OAuth Credentials</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                        Configure API keys to enable Google Calendar integrations and automated Google Meet generation.
+                                    </p>
+                                </div>
+                                <form onSubmit={submitSettings} className="p-6 space-y-6">
+                                    <div className="grid grid-cols-1 gap-5">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Google Client ID</label>
+                                            <input
+                                                type="text"
+                                                value={data.google_client_id}
+                                                onChange={(e) => setData('google_client_id', e.target.value)}
+                                                placeholder="Enter Google Client ID"
+                                                className="mt-1.5 block w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-850 text-gray-900 dark:text-white px-3 py-2.5 focus:border-indigo-500 focus:ring-indigo-500 text-sm transition-all font-mono"
+                                            />
+                                            {errors.google_client_id && <div className="text-red-500 text-xs mt-1">{errors.google_client_id}</div>}
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Google Client Secret</label>
+                                            <input
+                                                type="password"
+                                                value={data.google_client_secret}
+                                                onChange={(e) => setData('google_client_secret', e.target.value)}
+                                                placeholder="Enter Google Client Secret"
+                                                className="mt-1.5 block w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-850 text-gray-900 dark:text-white px-3 py-2.5 focus:border-indigo-500 focus:ring-indigo-500 text-sm transition-all font-mono"
+                                            />
+                                            {errors.google_client_secret && <div className="text-red-500 text-xs mt-1">{errors.google_client_secret}</div>}
+                                        </div>
+                                    </div>
+
+                                    {/* Setup Instructions Card */}
+                                    <div className="p-5 bg-blue-50/50 dark:bg-blue-950/10 border border-blue-100 dark:border-blue-900/30 rounded-xl space-y-3">
+                                        <h4 className="text-xs font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
+                                            <AlertCircle className="w-4 h-4 animate-pulse" /> Setup Instructions
+                                        </h4>
+                                        <div className="text-xs text-gray-600 dark:text-gray-300 space-y-2 leading-relaxed">
+                                            <p>1. Go to the <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-0.5">Google Cloud Console <ExternalLink className="w-2.5 h-2.5" /></a> and select or create a project.</p>
+                                            <p>2. Search for <strong>Google Calendar API</strong> and click <strong>Enable</strong>.</p>
+                                            <p>3. Set up your <strong>OAuth Consent Screen</strong> (External) and add your Gmail as a Test User.</p>
+                                            <p>4. Go to <strong>Credentials</strong> &rarr; <strong>Create Credentials</strong> &rarr; <strong>OAuth Client ID</strong> (Web Application).</p>
+                                            <p>5. Under <strong>Authorized redirect URIs</strong>, add precisely:
+                                                <code className="block mt-1.5 p-2.5 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-750 font-mono text-indigo-600 dark:text-indigo-400 select-all cursor-pointer">
+                                                    {typeof window !== 'undefined' ? window.location.origin : 'https://sudhir.socialspecta.com'}/admin/google/callback
+                                                </code>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex justify-end pt-2 border-t border-gray-200 dark:border-gray-800">
+                                        <button
+                                            type="submit"
+                                            disabled={processing}
+                                            className="bg-indigo-600 text-white font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-indigo-700 transition-all disabled:opacity-50 shadow-sm"
+                                        >
+                                            {processing ? 'Saving Configurations...' : 'Save Google Credentials'}
                                         </button>
                                     </div>
                                 </form>

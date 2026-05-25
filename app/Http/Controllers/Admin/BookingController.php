@@ -32,9 +32,6 @@ class BookingController extends Controller
         ]);
     }
 
-    /**
-     * Update availability days, hours, and durations.
-     */
     public function updateSettings(Request $request)
     {
         $request->validate([
@@ -43,6 +40,8 @@ class BookingController extends Controller
             'work_hours_start' => 'required',
             'work_hours_end' => 'required',
             'slot_duration' => 'required|integer|min:15|max:120',
+            'google_client_id' => 'nullable|string|max:255',
+            'google_client_secret' => 'nullable|string|max:255',
         ]);
 
         $settings = BookingSetting::firstOrNew([]);
@@ -51,6 +50,8 @@ class BookingController extends Controller
         $settings->work_hours_start = $request->work_hours_start;
         $settings->work_hours_end = $request->work_hours_end;
         $settings->slot_duration = $request->slot_duration;
+        $settings->google_client_id = $request->google_client_id;
+        $settings->google_client_secret = $request->google_client_secret;
         $settings->save();
 
         return back()->with('message', 'Availability configurations saved successfully.');

@@ -44,5 +44,22 @@ class AppServiceProvider extends ServiceProvider
         } catch (\Exception $e) {
             // Silently ignore failure during setup operations
         }
+
+        // Dynamically inject administrator Google API credentials at runtime
+        try {
+            if (Schema::hasTable('booking_settings')) {
+                $settings = \App\Models\BookingSetting::first();
+                if ($settings) {
+                    if (!empty($settings->google_client_id)) {
+                        config(['services.google.client_id' => $settings->google_client_id]);
+                    }
+                    if (!empty($settings->google_client_secret)) {
+                        config(['services.google.client_secret' => $settings->google_client_secret]);
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // Silently ignore failure during setup operations
+        }
     }
 }

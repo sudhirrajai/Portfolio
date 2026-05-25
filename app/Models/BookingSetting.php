@@ -12,6 +12,8 @@ class BookingSetting extends Model
         'work_hours_start',
         'work_hours_end',
         'slot_duration',
+        'google_client_id',
+        'google_client_secret',
     ];
 
     protected $casts = [
