@@ -124,7 +124,18 @@ export default function AuthenticatedLayout({ header, children }) {
                 {/* Mobile Menu */}
                 <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700'}>
                     <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</ResponsiveNavLink>
+                        {navItems.map((item) => (
+                            <ResponsiveNavLink
+                                key={item.label}
+                                href={route(item.route)}
+                                active={isActive(item.pattern)}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <item.icon className="w-5 h-5" />
+                                    {item.label}
+                                </div>
+                            </ResponsiveNavLink>
+                        ))}
                     </div>
                     <div className="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">
                         <div className="px-4">
