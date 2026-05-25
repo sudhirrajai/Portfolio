@@ -3,15 +3,29 @@ import { Link } from '@inertiajs/react';
 
 export default function GuestLayout({ children }) {
     return (
-        <div className="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0 dark:bg-gray-900">
-            <div>
-                <Link href="/">
-                    <ApplicationLogo className="h-20 w-20 fill-current text-gray-500" />
-                </Link>
-            </div>
+        <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 dark:bg-zinc-950 px-4 py-8">
+            <div className="w-full sm:max-w-md">
+                
+                {/* Logo Wrapper */}
+                <div className="flex justify-center mb-8">
+                    <Link href="/" className="inline-flex items-center gap-2.5">
+                        <ApplicationLogo className="h-10 w-10 text-indigo-600 dark:text-[#FA76FF]" />
+                        <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white uppercase">
+                            Sudhir<span className="text-indigo-600 dark:text-[#FA76FF]">Rajai</span>
+                        </span>
+                    </Link>
+                </div>
 
-            <div className="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg dark:bg-gray-800">
-                {children}
+                {/* Form Container Card */}
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl shadow-xl shadow-indigo-500/5 overflow-hidden p-8">
+                    {children}
+                </div>
+                
+                {/* Footer credit link */}
+                <p className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
+                    &copy; {new Date().getFullYear()} All rights reserved. Powered by Laravel & Inertia.
+                </p>
+
             </div>
         </div>
     );

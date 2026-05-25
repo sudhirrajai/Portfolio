@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
                 $smtp = SmtpSetting::first();
                 if ($smtp && !empty($smtp->host)) {
                     config([
+                        'mail.default' => 'smtp',
                         'mail.mailers.smtp.host' => $smtp->host,
                         'mail.mailers.smtp.port' => (int)$smtp->port,
                         'mail.mailers.smtp.username' => $smtp->username,
