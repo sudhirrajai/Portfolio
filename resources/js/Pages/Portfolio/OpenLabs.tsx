@@ -39,10 +39,6 @@ const OpenLabs = ({ labs }: { labs: LabProject[] }) => {
   return (
     <>
       <SEOHead pageKey="work" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
       <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-300">
         <Navbar />
         <PageContainer>

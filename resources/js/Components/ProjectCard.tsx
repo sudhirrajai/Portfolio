@@ -26,7 +26,13 @@ export const ProjectCard = ({ project }: { project: Project }) => (
 
         {project.image_path ? (
            <>
-             <img src={`/storage/${project.image_path}`} alt={project.title} className="absolute inset-0 w-full h-full object-cover" />
+             <img 
+               src={`/storage/${project.image_path}`} 
+               alt={project.title} 
+               className="absolute inset-0 w-full h-full object-cover" 
+               loading="lazy"
+               decoding="async"
+             />
              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-[5]" />
            </>
         ) : null}

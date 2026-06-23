@@ -9,10 +9,6 @@ const About = ({ profile, experience, education, skills }) => {
   return (
     <>
       <SEOHead pageKey="about" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
       <div className="pf-page">
         <Navbar />
         <PageContainer className="max-w-5xl">

@@ -105,10 +105,6 @@ const ProjectDetail = ({ project }) => {
   return (
     <>
       <SEOHead title={project.title} description={project.summary} />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
       <Navbar />
 
       <main className="flex h-screen justify-center items-start w-full relative bg-white dark:bg-[#0a0a0a] mx-auto my-0 max-lg:flex-col max-lg:h-auto transition-colors duration-300">

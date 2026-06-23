@@ -21,10 +21,6 @@ const Blog = ({ blogs }) => {
   return (
     <>
       <SEOHead pageKey="blog" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
       <div className="pf-page">
         <Navbar />
         <PageContainer>

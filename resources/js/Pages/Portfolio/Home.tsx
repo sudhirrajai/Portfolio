@@ -24,10 +24,6 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
       className="pf-page"
     >
       <SEOHead pageKey="home" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
       <div className="animate-fade-in" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
         <Navbar />
       </div>

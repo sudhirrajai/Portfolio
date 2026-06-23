@@ -27,10 +27,6 @@ const BlogPost = ({ post }) => {
   return (
     <>
       <SEOHead title={post.title} description={post.excerpt} />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
       <div className="pf-page">
         <Navbar />
         <PageContainer className="max-w-3xl py-8">

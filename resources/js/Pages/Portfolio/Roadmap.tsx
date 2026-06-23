@@ -63,10 +63,6 @@ const Roadmap = ({ roadmaps }: { roadmaps: RoadmapMilestone[] }) => {
   return (
     <>
       <SEOHead title="Roadmap & Future Goals" description="A visual look into my current focus, next goals, and future career vision." />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
       <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-300">
         <Navbar />
         <PageContainer>
