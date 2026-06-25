@@ -92,7 +92,7 @@ const ProjectDetail = ({ project }) => {
         <div className="text-center mt-20">
           <h1 className="text-4xl font-medium mb-4 text-black dark:text-white">Project Not Found</h1>
           <button
-            onClick={() => router.visit('/')}
+            onClick={() => router.visit('/work')}
             className="pf-btn px-6 py-3 text-sm font-bold"
           >
             Back to Work
@@ -225,7 +225,7 @@ const ProjectDetail = ({ project }) => {
                 </a>
               )}
               <Link
-                href="/"
+                href="/work"
                 className="w-full flex items-center justify-center gap-1.5 py-3 border-2 border-black dark:border-white text-[11px] font-bold uppercase tracking-widest hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]"
               >
                 <span>←</span> Back to all work
