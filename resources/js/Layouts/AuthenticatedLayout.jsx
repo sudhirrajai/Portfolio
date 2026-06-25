@@ -26,6 +26,7 @@ export default function AuthenticatedLayout({ header, children }) {
         { label: 'Education', route: 'admin.educations.index', pattern: 'admin.educations.*', icon: GraduationCap },
         { label: 'Skills', route: 'admin.skills.index', pattern: 'admin.skills.*', icon: Wrench },
         { label: 'Messages', route: 'admin.messages.index', pattern: 'admin.messages.*', icon: MessageSquare },
+        { label: 'Comments', route: 'admin.comments.index', pattern: 'admin.comments.*', icon: MessageSquare },
         { label: 'Bookings & Calendar', route: 'admin.bookings.index', pattern: 'admin.bookings.*', icon: Calendar },
         { label: 'CMS / Profile Info', route: 'admin.profile.edit', pattern: 'admin.profile.*', icon: Settings2 },
         { label: 'SEO Settings', route: 'admin.seo.index', pattern: 'admin.seo.*', icon: Globe },

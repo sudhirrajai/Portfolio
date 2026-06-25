@@ -77,8 +77,38 @@ Route::get('/roadmap', function () {
 
 Route::get('/blog/{slug}', function ($slug) {
     $blog = \App\Models\BlogPost::where('slug', $slug)->firstOrFail();
-    return Inertia::render('Portfolio/BlogPost', ['post' => $blog]);
+
+    // Load approved root comments with their approved replies
+    $comments = \App\Models\BlogComment::with(['replies'])
+        ->where('blog_post_id', $blog->id)
+        ->approved()
+        ->roots()
+        ->orderBy('created_at', 'desc')
+        ->get()
+        ->map(fn($c) => [
+            'id'         => $c->id,
+            'name'       => $c->name,
+            'body'       => $c->body,
+            'created_at' => $c->created_at,
+            'replies'    => $c->replies->map(fn($r) => [
+                'id'         => $r->id,
+                'name'       => $r->name,
+                'body'       => $r->body,
+                'created_at' => $r->created_at,
+            ])->values(),
+        ])->values();
+
+    return Inertia::render('Portfolio/BlogPost', [
+        'post'              => $blog,
+        'comments'          => $comments,
+        'recaptcha_site_key' => config('services.recaptcha.site_key'),
+    ]);
 });
+
+// Public: submit a blog comment (rate-limited: 3/hr per IP)
+Route::post('/blog/{slug}/comments', [\App\Http\Controllers\BlogCommentController::class, 'store'])
+    ->middleware('throttle:3,60')
+    ->name('blog.comments.store');
 
 Route::get('/captcha/image', [\App\Http\Controllers\ContactController::class, 'getCaptchaImage'])->name('captcha.image');
 Route::get('/contact', [\App\Http\Controllers\ContactController::class, 'index'])->name('contact.show');
@@ -207,6 +237,12 @@ Route::middleware('auth')->group(function () {
         'index' => 'admin.messages.index',
         'destroy' => 'admin.messages.destroy',
     ]);
+
+    // Blog comment moderation
+    Route::get('admin/comments', [\App\Http\Controllers\Admin\BlogCommentController::class, 'index'])->name('admin.comments.index');
+    Route::patch('admin/comments/{comment}/approve', [\App\Http\Controllers\Admin\BlogCommentController::class, 'approve'])->name('admin.comments.approve');
+    Route::patch('admin/comments/{comment}/reject', [\App\Http\Controllers\Admin\BlogCommentController::class, 'reject'])->name('admin.comments.reject');
+    Route::delete('admin/comments/{comment}', [\App\Http\Controllers\Admin\BlogCommentController::class, 'destroy'])->name('admin.comments.destroy');
     Route::resource('admin/roadmaps', \App\Http\Controllers\Admin\RoadmapController::class)->names([
         'index' => 'admin.roadmaps.index',
         'create' => 'admin.roadmaps.create',

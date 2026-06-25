@@ -4,8 +4,9 @@ import { Navbar } from '@/Components/Navbar';
 import { SEOHead } from '@/Components/SEOHead';
 import { PageContainer } from '@/Components/PageContainer';
 import { Footer } from '@/Components/Footer';
+import { CommentSection } from '@/Components/CommentSection';
 
-const BlogPost = ({ post }) => {
+const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
   if (!post) {
     return (
       <div className="pf-page">
@@ -84,10 +85,17 @@ const BlogPost = ({ post }) => {
             ))}
           </div>
 
+          {/* Comment Section */}
+          <CommentSection
+            postSlug={post.slug}
+            comments={comments}
+            recaptchaSiteKey={recaptcha_site_key}
+          />
+
           {/* Action Button Group */}
           <Link
             href="/blog"
-            className="pf-btn px-8 py-4 group"
+            className="pf-btn px-8 py-4 group mt-8 inline-flex"
           >
             <span className="group-hover:-translate-x-1 transition-transform">←</span> All posts
           </Link>
