@@ -62,6 +62,7 @@ function timeAgo(dateStr: string): string {
 export default function CommentsIndex({ comments, counts, filter }: Props) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [replyTexts, setReplyTexts] = useState<Record<number, string>>({});
 
   const data = comments.data ?? [];
 
@@ -86,6 +87,22 @@ export default function CommentsIndex({ comments, counts, filter }: Props) {
       onSuccess: () => toast.success('Comment deleted permanently.'),
       onFinish: () => setDeleteId(null),
     });
+  };
+
+  const handleReplyAsAuthor = (commentId: number) => {
+    const body = replyTexts[commentId]?.trim();
+    if (!body) return;
+    router.post(
+      route('admin.comments.reply-as-author', commentId),
+      { body },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          toast.success('Author reply posted — it is live immediately.');
+          setReplyTexts((prev) => ({ ...prev, [commentId]: '' }));
+        },
+      }
+    );
   };
 
   const filterTab = (label: string, value: string, count: number) => (
@@ -250,6 +267,29 @@ export default function CommentsIndex({ comments, counts, filter }: Props) {
                               className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest bg-red-600 text-white hover:bg-red-700 transition-colors rounded">
                               Delete
                             </button>
+                          </div>
+
+                          {/* Reply as Author */}
+                          <div className="mt-5 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400 mb-2">
+                              ✦ Reply as Author — will appear live immediately with Author badge
+                            </p>
+                            <div className="flex gap-2 items-end">
+                              <textarea
+                                rows={3}
+                                value={replyTexts[comment.id] ?? ''}
+                                onChange={(e) => setReplyTexts((prev) => ({ ...prev, [comment.id]: e.target.value }))}
+                                placeholder={`Reply to ${comment.name}...`}
+                                className="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"
+                              />
+                              <button
+                                onClick={() => handleReplyAsAuthor(comment.id)}
+                                disabled={!replyTexts[comment.id]?.trim()}
+                                className="px-4 py-2 text-[11px] font-bold uppercase tracking-widest bg-amber-500 text-white hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors rounded h-fit"
+                              >
+                                Post Reply
+                              </button>
+                            </div>
                           </div>
                         </div>
                       )}

@@ -93,4 +93,31 @@ class BlogCommentController extends Controller
         $comment->delete();
         return back()->with('message', 'Comment deleted.');
     }
+
+    /**
+     * Post a reply as the blog author (is_author = true, auto-approved).
+     */
+    public function replyAsAuthor(Request $request, BlogComment $comment)
+    {
+        $validated = $request->validate([
+            'body' => 'required|string|min:1|max:2000',
+        ]);
+
+        $profile = \App\Models\Profile::first();
+        $user    = auth()->user();
+
+        BlogComment::create([
+            'blog_post_id' => $comment->blog_post_id,
+            'parent_id'    => $comment->id,
+            'name'         => $profile?->name ?? $user->name,
+            'email'        => $profile?->email ?? $user->email,
+            'body'         => $validated['body'],
+            'status'       => 'approved',   // author replies go live immediately
+            'is_author'    => true,
+            'ip_address'   => $request->ip(),
+            'user_agent'   => substr($request->userAgent() ?? '', 0, 512),
+        ]);
+
+        return back()->with('message', 'Your reply has been posted.');
+    }
 }

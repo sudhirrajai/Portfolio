@@ -7,6 +7,7 @@ interface Reply {
   id: number;
   name: string;
   body: string;
+  is_author: boolean;
   created_at: string;
 }
 
@@ -14,6 +15,7 @@ interface Comment {
   id: number;
   name: string;
   body: string;
+  is_author: boolean;
   created_at: string;
   replies: Reply[];
 }
@@ -276,12 +278,17 @@ function CommentForm({ postSlug, parentId = null, onCancel, recaptchaSiteKey, co
 function ReplyItem({ reply }: { reply: Reply }) {
   return (
     <div className="flex gap-3 pt-3 border-t border-black/5 dark:border-white/5">
-      <div className={`w-7 h-7 rounded-full ${avatarColor(reply.name)} text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5`}>
+      <div className={`w-7 h-7 rounded-full ${reply.is_author ? 'bg-amber-500' : avatarColor(reply.name)} text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5`}>
         {initials(reply.name)}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="flex items-baseline gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xs font-bold text-black dark:text-white">{reply.name}</span>
+          {reply.is_author && (
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-700 rounded-sm">
+              ✦ Author
+            </span>
+          )}
           <span className="text-[10px] text-gray-400">{timeAgo(reply.created_at)}</span>
         </div>
         <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mt-1 whitespace-pre-wrap break-words">{reply.body}</p>
@@ -304,12 +311,17 @@ function CommentItem({ comment, postSlug, recaptchaSiteKey }: {
     <div className="border-2 border-black dark:border-white bg-white dark:bg-[#111] p-5 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.06)]">
       {/* Comment header */}
       <div className="flex items-start gap-3">
-        <div className={`w-9 h-9 rounded-full ${avatarColor(comment.name)} text-white text-sm font-bold flex items-center justify-center flex-shrink-0`}>
+        <div className={`w-9 h-9 rounded-full ${comment.is_author ? 'bg-amber-500' : avatarColor(comment.name)} text-white text-sm font-bold flex items-center justify-center flex-shrink-0`}>
           {initials(comment.name)}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-baseline gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm font-bold text-black dark:text-white">{comment.name}</span>
+            {comment.is_author && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-700 rounded-sm">
+                ✦ Author
+              </span>
+            )}
             <span className="text-xs text-gray-400 dark:text-gray-500">{timeAgo(comment.created_at)}</span>
           </div>
           <p className="text-[15px] text-gray-800 dark:text-gray-200 leading-relaxed mt-2 whitespace-pre-wrap break-words">

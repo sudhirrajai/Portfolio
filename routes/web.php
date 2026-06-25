@@ -89,11 +89,13 @@ Route::get('/blog/{slug}', function ($slug) {
             'id'         => $c->id,
             'name'       => $c->name,
             'body'       => $c->body,
+            'is_author'  => $c->is_author,
             'created_at' => $c->created_at,
             'replies'    => $c->replies->map(fn($r) => [
                 'id'         => $r->id,
                 'name'       => $r->name,
                 'body'       => $r->body,
+                'is_author'  => $r->is_author,
                 'created_at' => $r->created_at,
             ])->values(),
         ])->values();
@@ -243,6 +245,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('admin/comments/{comment}/approve', [\App\Http\Controllers\Admin\BlogCommentController::class, 'approve'])->name('admin.comments.approve');
     Route::patch('admin/comments/{comment}/reject', [\App\Http\Controllers\Admin\BlogCommentController::class, 'reject'])->name('admin.comments.reject');
     Route::delete('admin/comments/{comment}', [\App\Http\Controllers\Admin\BlogCommentController::class, 'destroy'])->name('admin.comments.destroy');
+    Route::post('admin/comments/{comment}/reply-as-author', [\App\Http\Controllers\Admin\BlogCommentController::class, 'replyAsAuthor'])->name('admin.comments.reply-as-author');
     Route::resource('admin/roadmaps', \App\Http\Controllers\Admin\RoadmapController::class)->names([
         'index' => 'admin.roadmaps.index',
         'create' => 'admin.roadmaps.create',

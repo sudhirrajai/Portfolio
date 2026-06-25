@@ -15,8 +15,13 @@ class BlogComment extends Model
         'email',
         'body',
         'status',
+        'is_author',
         'ip_address',
         'user_agent',
+    ];
+
+    protected $casts = [
+        'is_author' => 'boolean',
     ];
 
     // Relationship: belongs to a blog post
