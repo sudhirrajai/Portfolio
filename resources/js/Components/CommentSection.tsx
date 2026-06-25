@@ -90,17 +90,34 @@ interface CommentFormProps {
   onCancel?: () => void;
   recaptchaSiteKey?: string;
   compact?: boolean;
+  initialBody?: string;
 }
 
-function CommentForm({ postSlug, parentId = null, onCancel, recaptchaSiteKey, compact = false }: CommentFormProps) {
+function CommentForm({ postSlug, parentId = null, onCancel, recaptchaSiteKey, compact = false, initialBody = '' }: CommentFormProps) {
   const { props } = usePage<any>();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [body, setBody] = useState(initialBody);
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const { getToken } = useRecaptcha(recaptchaSiteKey);
+
+  // Seed body when initialBody changes (e.g. opening reply for a different comment)
+  useEffect(() => {
+    if (initialBody) {
+      setBody(initialBody);
+      // Move cursor to end of the pre-filled text
+      setTimeout(() => {
+        if (textareaRef.current) {
+          const len = textareaRef.current.value.length;
+          textareaRef.current.focus();
+          textareaRef.current.setSelectionRange(len, len);
+        }
+      }, 0);
+    }
+  }, [initialBody]);
 
   // Check flash after redirect
   useEffect(() => {
@@ -212,6 +229,7 @@ function CommentForm({ postSlug, parentId = null, onCancel, recaptchaSiteKey, co
 
       <div>
         <textarea
+          ref={textareaRef}
           placeholder="Write your comment... (minimum 5 characters)"
           value={body}
           onChange={(e) => setBody(e.target.value)}
@@ -332,6 +350,7 @@ function CommentItem({ comment, postSlug, recaptchaSiteKey }: {
             parentId={comment.id}
             onCancel={() => setReplying(false)}
             recaptchaSiteKey={recaptchaSiteKey}
+            initialBody={`@${comment.name} `}
             compact
           />
         </div>
