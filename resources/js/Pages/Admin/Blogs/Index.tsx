@@ -48,6 +48,7 @@ export default function Index({ auth, blogs }) {
                             <thead className="bg-gray-50 dark:bg-gray-850">
                                 <tr>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400">Post Title</th>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400">Category</th>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400">Date Published</th>
                                     <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400">Actions</th>
                                 </tr>
@@ -55,7 +56,7 @@ export default function Index({ auth, blogs }) {
                             <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
                                 {blogs.length === 0 ? (
                                     <tr>
-                                        <td colSpan="3" className="px-6 py-12 text-center text-sm text-gray-500">
+                                        <td colSpan={4} className="px-6 py-12 text-center text-sm text-gray-500">
                                             No posts written yet. Click 'Create Post' to start!
                                         </td>
                                     </tr>
@@ -72,6 +73,15 @@ export default function Index({ auth, blogs }) {
                                                         {blog.title}
                                                     </div>
                                                 </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                {blog.category ? (
+                                                    <span className="inline-flex bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded text-xs font-semibold border border-indigo-100 dark:border-indigo-900/30">
+                                                        {blog.category.name}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-gray-400 dark:text-gray-650 text-xs italic">Uncategorized</span>
+                                                )}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                 {blog.date}

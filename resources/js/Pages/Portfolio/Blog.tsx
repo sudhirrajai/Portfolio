@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { Navbar } from '@/Components/Navbar';
 import { SEOHead } from '@/Components/SEOHead';
 import { PageContainer } from '@/Components/PageContainer';
 import { Footer } from '@/Components/Footer';
 
-const Blog = ({ blogs }) => {
+const Blog = ({ blogs, categories = [], activeCategory = null }: any) => {
   const INITIAL_COUNT = 5;
   const LOAD_MORE_STEP = 5;
   const [visibleCount, setVisibleCount] = React.useState(INITIAL_COUNT);
@@ -20,18 +20,56 @@ const Blog = ({ blogs }) => {
 
   return (
     <>
-      <SEOHead pageKey="blog" />
+      <SEOHead 
+        pageKey={activeCategory ? undefined : 'blog'}
+        title={activeCategory ? activeCategory.meta_title || `${activeCategory.name} Articles` : undefined}
+        description={activeCategory ? activeCategory.meta_description || activeCategory.description : undefined}
+      />
       <div className="pf-page">
         <Navbar />
         <PageContainer>
-          <div className="mb-12 md:mb-16">
-            <h1 className="pf-heading mb-6">
-              Blog.
+          <div className="mb-10 md:mb-12">
+            <h1 className="pf-heading mb-4">
+              {activeCategory ? `Category: ${activeCategory.name}` : 'Blog.'}
             </h1>
             <p className="pf-excerpt">
-              Field notes from building Laravel + Vue apps, scaling REST APIs, and learning my way around DevOps.
+              {activeCategory 
+                ? activeCategory.description || `Read articles categorized under "${activeCategory.name}".`
+                : 'Field notes from building Laravel + Vue apps, scaling REST APIs, and learning my way around DevOps.'}
             </p>
           </div>
+
+          {/* Categories Pills */}
+          {categories.length > 0 && (
+            <div className="flex flex-wrap gap-2.5 mb-10 overflow-x-auto pb-2 scrollbar-none">
+              <Link
+                href="/blog"
+                className={`px-4 py-2 border-2 text-[10px] font-bold uppercase tracking-widest transition-all duration-250 ${
+                  !activeCategory
+                    ? 'border-black bg-black text-white dark:border-white dark:bg-white dark:text-black shadow-[3px_3px_0px_0px_rgba(250,118,255,0.5)]'
+                    : 'border-black/10 dark:border-white/10 hover:border-black dark:hover:border-white text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white'
+                }`}
+              >
+                All Posts
+              </Link>
+              {categories.map((cat) => {
+                const isActive = activeCategory?.id === cat.id;
+                return (
+                  <Link
+                    key={cat.id}
+                    href={`/blog/category/${cat.slug}`}
+                    className={`px-4 py-2 border-2 text-[10px] font-bold uppercase tracking-widest transition-all duration-250 ${
+                      isActive
+                        ? 'border-black bg-black text-white dark:border-white dark:bg-white dark:text-black shadow-[3px_3px_0px_0px_rgba(250,118,255,0.5)]'
+                        : 'border-black/10 dark:border-white/10 hover:border-black dark:hover:border-white text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white'
+                    }`}
+                  >
+                    {cat.name} ({cat.posts_count})
+                  </Link>
+                );
+              })}
+            </div>
+          )}
 
           <div className="flex flex-col gap-8">
             {visibleBlogs.map((post) => (
@@ -53,6 +91,19 @@ const Blog = ({ blogs }) => {
                   </h2>
                   <p className="text-[15px] md:text-base text-gray-600 dark:text-gray-400 max-w-2xl mb-4 leading-relaxed">{post.excerpt}</p>
                   <div className="flex flex-wrap gap-2">
+                    {post.category && (
+                      <span
+                        key={post.category.slug}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          router.visit(`/blog/category/${post.category.slug}`);
+                        }}
+                        className="pf-badge px-3 h-[23px] bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-950/20 dark:border-indigo-900/30 dark:text-indigo-300 font-bold hover:bg-indigo-100 hover:border-indigo-300 dark:hover:bg-indigo-950/50 transition-colors"
+                      >
+                        📂 {post.category.name}
+                      </span>
+                    )}
                     {post.tags.map((tag) => (
                       <span
                         key={tag}

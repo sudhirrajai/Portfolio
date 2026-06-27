@@ -33,10 +33,21 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
         <PageContainer className="max-w-3xl py-8">
           
           {/* Metadata Row */}
-          <div className="flex items-center gap-2 mb-6 text-[11px] font-bold uppercase text-gray-500 dark:text-gray-400 tracking-wider">
+          <div className="flex items-center gap-2 flex-wrap mb-6 text-[11px] font-bold uppercase text-gray-500 dark:text-gray-400 tracking-wider">
             <span>{post.date}</span>
             <span className="text-indigo-600 dark:text-indigo-400">•</span>
             <span className="text-indigo-600 dark:text-indigo-400 font-bold">{post.read_time}</span>
+            {post.category && (
+              <>
+                <span className="text-indigo-600 dark:text-indigo-400">•</span>
+                <Link
+                  href={`/blog/category/${post.category.slug}`}
+                  className="text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-0.5"
+                >
+                  📂 {post.category.name}
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Main Heading */}

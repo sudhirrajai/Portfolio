@@ -2,7 +2,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import Dropdown from '@/Components/Dropdown';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { LayoutDashboard, Briefcase, FileText, GraduationCap, Wrench, User, Settings, LogOut, MessageSquare, Settings2, Globe, Calendar, Mail, Milestone } from 'lucide-react';
+import { LayoutDashboard, Briefcase, FileText, GraduationCap, Wrench, User, Settings, LogOut, MessageSquare, Settings2, Globe, Calendar, Mail, Milestone, Tag } from 'lucide-react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
@@ -22,6 +22,7 @@ export default function AuthenticatedLayout({ header, children }) {
         { label: 'Projects', route: 'admin.projects.index', pattern: 'admin.projects.*', icon: Briefcase },
         { label: 'Roadmap', route: 'admin.roadmaps.index', pattern: 'admin.roadmaps.*', icon: Milestone },
         { label: 'Blog Posts', route: 'admin.blogs.index', pattern: 'admin.blogs.*', icon: FileText },
+        { label: 'Blog Categories', route: 'admin.categories.index', pattern: 'admin.categories.*', icon: Tag },
         { label: 'Experience', route: 'admin.experiences.index', pattern: 'admin.experiences.*', icon: Briefcase },
         { label: 'Education', route: 'admin.educations.index', pattern: 'admin.educations.*', icon: GraduationCap },
         { label: 'Skills', route: 'admin.skills.index', pattern: 'admin.skills.*', icon: Wrench },

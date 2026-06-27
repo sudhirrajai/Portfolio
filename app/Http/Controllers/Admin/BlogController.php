@@ -14,13 +14,15 @@ class BlogController extends Controller
     public function index()
     {
         return Inertia::render('Admin/Blogs/Index', [
-            'blogs' => BlogPost::orderBy('created_at', 'desc')->get()
+            'blogs' => BlogPost::with('category')->orderBy('created_at', 'desc')->get()
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Admin/Blogs/Form');
+        return Inertia::render('Admin/Blogs/Form', [
+            'categories' => \App\Models\BlogCategory::orderBy('name', 'asc')->get()
+        ]);
     }
 
     public function store(Request $request)
@@ -31,6 +33,7 @@ class BlogController extends Controller
         }
 
         $validated = $request->validate([
+            'category_id' => 'nullable|exists:blog_categories,id',
             'title' => 'required|string|max:255',
             'date' => 'required|string|max:255',
             'read_time' => 'required|string|max:255',
@@ -56,7 +59,8 @@ class BlogController extends Controller
     public function edit(BlogPost $blog)
     {
         return Inertia::render('Admin/Blogs/Form', [
-            'blog' => $blog
+            'blog' => $blog,
+            'categories' => \App\Models\BlogCategory::orderBy('name', 'asc')->get()
         ]);
     }
 
@@ -68,6 +72,7 @@ class BlogController extends Controller
         }
 
         $validated = $request->validate([
+            'category_id' => 'nullable|exists:blog_categories,id',
             'title' => 'required|string|max:255',
             'date' => 'required|string|max:255',
             'read_time' => 'required|string|max:255',

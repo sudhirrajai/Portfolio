@@ -198,10 +198,11 @@ const TiptapEditor = ({ content, onChange }) => {
     );
 };
 
-export default function Form({ auth, blog }) {
+export default function Form({ auth, blog, categories = [] }) {
     const isEditing = !!blog;
 
     const { data, setData, post, processing, errors } = useForm({
+        category_id: blog?.category_id || '',
         title: blog?.title || '',
         date: blog?.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         read_time: blog?.read_time || '5 min read',
@@ -355,6 +356,31 @@ export default function Form({ auth, blog }) {
 
                         {/* Meta Attributes */}
                         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-sm space-y-5">
+                            <div>
+                                <div className="flex justify-between items-center mb-1.5">
+                                    <label className="block text-xs font-bold uppercase text-gray-400 dark:text-gray-500 tracking-wider">Category</label>
+                                    <Link 
+                                        href={route('admin.categories.index')} 
+                                        className="text-[10px] text-indigo-650 dark:text-indigo-455 font-bold hover:underline"
+                                    >
+                                        + Manage Categories
+                                    </Link>
+                                </div>
+                                <select
+                                    value={data.category_id}
+                                    onChange={(e) => setData('category_id', e.target.value)}
+                                    className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-850 text-gray-900 dark:text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-semibold"
+                                >
+                                    <option value="">Uncategorized</option>
+                                    {categories.map((category) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.category_id && <p className="text-xs text-red-500 mt-1">{errors.category_id}</p>}
+                            </div>
+
                             <div>
                                 <label className="block text-xs font-bold uppercase text-gray-400 dark:text-gray-500 tracking-wider mb-1.5">Publish Date</label>
                                 <input

@@ -56,8 +56,27 @@ Route::get('/about', function () {
 });
 
 Route::get('/blog', function () {
-    $blogs = \App\Models\BlogPost::orderBy('created_at', 'desc')->get();
-    return Inertia::render('Portfolio/Blog', ['blogs' => $blogs]);
+    $blogs = \App\Models\BlogPost::with('category')->orderBy('created_at', 'desc')->get();
+    $categories = \App\Models\BlogCategory::withCount('posts')->orderBy('name', 'asc')->get();
+    return Inertia::render('Portfolio/Blog', [
+        'blogs' => $blogs,
+        'categories' => $categories
+    ]);
+});
+
+Route::get('/blog/category/{slug}', function ($slug) {
+    $category = \App\Models\BlogCategory::where('slug', $slug)->firstOrFail();
+    $blogs = \App\Models\BlogPost::with('category')
+        ->where('category_id', $category->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+    $categories = \App\Models\BlogCategory::withCount('posts')->orderBy('name', 'asc')->get();
+    
+    return Inertia::render('Portfolio/Blog', [
+        'blogs' => $blogs,
+        'categories' => $categories,
+        'activeCategory' => $category
+    ]);
 });
 
 Route::get('/open-labs', function () {
@@ -76,7 +95,7 @@ Route::get('/roadmap', function () {
 
 
 Route::get('/blog/{slug}', function ($slug) {
-    $blog = \App\Models\BlogPost::where('slug', $slug)->firstOrFail();
+    $blog = \App\Models\BlogPost::with('category')->where('slug', $slug)->firstOrFail();
 
     // Load approved root comments with their approved replies
     $comments = \App\Models\BlogComment::with(['replies'])
@@ -254,6 +273,15 @@ Route::middleware('auth')->group(function () {
         'edit' => 'admin.roadmaps.edit',
         'update' => 'admin.roadmaps.update',
         'destroy' => 'admin.roadmaps.destroy',
+    ]);
+    Route::resource('admin/categories', \App\Http\Controllers\Admin\BlogCategoryController::class)->names([
+        'index' => 'admin.categories.index',
+        'create' => 'admin.categories.create',
+        'store' => 'admin.categories.store',
+        'show' => 'admin.categories.show',
+        'edit' => 'admin.categories.edit',
+        'update' => 'admin.categories.update',
+        'destroy' => 'admin.categories.destroy',
     ]);
 
     Route::get('admin/profile', [\App\Http\Controllers\Admin\PortfolioProfileController::class, 'edit'])->name('admin.profile.edit');
