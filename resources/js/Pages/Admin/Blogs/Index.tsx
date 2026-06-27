@@ -75,10 +75,14 @@ export default function Index({ auth, blogs }) {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                {blog.category ? (
-                                                    <span className="inline-flex bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded text-xs font-semibold border border-indigo-100 dark:border-indigo-900/30">
-                                                        {blog.category.name}
-                                                    </span>
+                                                {blog.categories && blog.categories.length > 0 ? (
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {blog.categories.map((category) => (
+                                                            <span key={category.id} className="inline-flex bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded text-xs font-semibold border border-indigo-100 dark:border-indigo-900/30">
+                                                                {category.name}
+                                                            </span>
+                                                        ))}
+                                                    </div>
                                                 ) : (
                                                     <span className="text-gray-400 dark:text-gray-650 text-xs italic">Uncategorized</span>
                                                 )}

@@ -91,19 +91,19 @@ const Blog = ({ blogs, categories = [], activeCategory = null }: any) => {
                   </h2>
                   <p className="text-[15px] md:text-base text-gray-600 dark:text-gray-400 max-w-2xl mb-4 leading-relaxed">{post.excerpt}</p>
                   <div className="flex flex-wrap gap-2">
-                    {post.category && (
+                    {post.categories && post.categories.map((category) => (
                       <span
-                        key={post.category.slug}
+                        key={category.slug}
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          router.visit(`/blog/category/${post.category.slug}`);
+                          router.visit(`/blog/category/${category.slug}`);
                         }}
                         className="pf-badge px-3 h-[23px] bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-950/20 dark:border-indigo-900/30 dark:text-indigo-300 font-bold hover:bg-indigo-100 hover:border-indigo-300 dark:hover:bg-indigo-950/50 transition-colors"
                       >
-                        📂 {post.category.name}
+                        📂 {category.name}
                       </span>
-                    )}
+                    ))}
                     {post.tags.map((tag) => (
                       <span
                         key={tag}

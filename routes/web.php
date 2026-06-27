@@ -56,7 +56,7 @@ Route::get('/about', function () {
 });
 
 Route::get('/blog', function () {
-    $blogs = \App\Models\BlogPost::with('category')->orderBy('created_at', 'desc')->get();
+    $blogs = \App\Models\BlogPost::with('categories')->orderBy('created_at', 'desc')->get();
     $categories = \App\Models\BlogCategory::withCount('posts')->orderBy('name', 'asc')->get();
     return Inertia::render('Portfolio/Blog', [
         'blogs' => $blogs,
@@ -66,8 +66,10 @@ Route::get('/blog', function () {
 
 Route::get('/blog/category/{slug}', function ($slug) {
     $category = \App\Models\BlogCategory::where('slug', $slug)->firstOrFail();
-    $blogs = \App\Models\BlogPost::with('category')
-        ->where('category_id', $category->id)
+    $blogs = \App\Models\BlogPost::with('categories')
+        ->whereHas('categories', function ($query) use ($category) {
+            $query->where('blog_categories.id', $category->id);
+        })
         ->orderBy('created_at', 'desc')
         ->get();
     $categories = \App\Models\BlogCategory::withCount('posts')->orderBy('name', 'asc')->get();
@@ -95,7 +97,7 @@ Route::get('/roadmap', function () {
 
 
 Route::get('/blog/{slug}', function ($slug) {
-    $blog = \App\Models\BlogPost::with('category')->where('slug', $slug)->firstOrFail();
+    $blog = \App\Models\BlogPost::with('categories')->where('slug', $slug)->firstOrFail();
 
     // Load approved root comments with their approved replies
     $comments = \App\Models\BlogComment::with(['replies'])

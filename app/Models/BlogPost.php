@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BlogPost extends Model
 {
-    protected $fillable = ['category_id', 'title', 'slug', 'date', 'read_time', 'color', 'image_path', 'excerpt', 'content', 'tags'];
+    protected $fillable = ['title', 'slug', 'date', 'read_time', 'color', 'image_path', 'excerpt', 'content', 'tags'];
 
     protected $casts = [
         'tags' => 'array',
@@ -20,12 +20,13 @@ class BlogPost extends Model
     }
 
     /**
-     * Relationship: A blog post belongs to a category.
+     * Relationship: A blog post belongs to many categories.
      */
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(BlogCategory::class, 'category_id');
+        return $this->belongsToMany(BlogCategory::class, 'blog_post_category', 'blog_post_id', 'category_id');
     }
 }
+
 
 

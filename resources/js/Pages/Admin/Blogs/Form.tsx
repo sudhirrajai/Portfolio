@@ -202,7 +202,7 @@ export default function Form({ auth, blog, categories = [] }) {
     const isEditing = !!blog;
 
     const { data, setData, post, processing, errors } = useForm({
-        category_id: blog?.category_id || '',
+        category_ids: blog?.categories ? blog.categories.map(c => c.id) : [],
         title: blog?.title || '',
         date: blog?.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         read_time: blog?.read_time || '5 min read',
@@ -357,28 +357,43 @@ export default function Form({ auth, blog, categories = [] }) {
                         {/* Meta Attributes */}
                         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-sm space-y-5">
                             <div>
-                                <div className="flex justify-between items-center mb-1.5">
-                                    <label className="block text-xs font-bold uppercase text-gray-400 dark:text-gray-500 tracking-wider">Category</label>
+                                <div className="flex justify-between items-center mb-2">
+                                    <label className="block text-xs font-bold uppercase text-gray-400 dark:text-gray-500 tracking-wider">Categories</label>
                                     <Link 
                                         href={route('admin.categories.index')} 
-                                        className="text-[10px] text-indigo-650 dark:text-indigo-455 font-bold hover:underline"
+                                        className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
                                     >
                                         + Manage Categories
                                     </Link>
                                 </div>
-                                <select
-                                    value={data.category_id}
-                                    onChange={(e) => setData('category_id', e.target.value)}
-                                    className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-850 text-gray-900 dark:text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-semibold"
-                                >
-                                    <option value="">Uncategorized</option>
-                                    {categories.map((category) => (
-                                        <option key={category.id} value={category.id}>
-                                            {category.name}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.category_id && <p className="text-xs text-red-500 mt-1">{errors.category_id}</p>}
+                                {categories.length === 0 ? (
+                                    <p className="text-xs text-gray-400 dark:text-gray-600 italic">No categories created yet.</p>
+                                ) : (
+                                    <div className="space-y-2 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-850 rounded-xl p-3">
+                                        {categories.map((category) => {
+                                            const isChecked = data.category_ids.includes(category.id);
+                                            const handleCheckboxChange = () => {
+                                                if (isChecked) {
+                                                    setData('category_ids', data.category_ids.filter(id => id !== category.id));
+                                                } else {
+                                                    setData('category_ids', [...data.category_ids, category.id]);
+                                                }
+                                            };
+                                            return (
+                                                <label key={category.id} className="flex items-center gap-2.5 cursor-pointer select-none">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isChecked}
+                                                        onChange={handleCheckboxChange}
+                                                        className="rounded border-gray-300 dark:border-gray-700 text-indigo-600 focus:ring-indigo-500/20 dark:bg-gray-900 w-4 h-4"
+                                                    />
+                                                    <span className="text-sm text-gray-700 dark:text-gray-300 font-semibold">{category.name}</span>
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                                {errors.category_ids && <p className="text-xs text-red-500 mt-1">{errors.category_ids}</p>}
                             </div>
 
                             <div>

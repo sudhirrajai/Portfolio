@@ -16,10 +16,10 @@ class BlogCategory extends Model
     ];
 
     /**
-     * Relationship: A category has many blog posts.
+     * Relationship: A category belongs to many blog posts.
      */
-    public function posts(): HasMany
+    public function posts()
     {
-        return $this->hasMany(BlogPost::class, 'category_id');
+        return $this->belongsToMany(BlogPost::class, 'blog_post_category', 'category_id', 'blog_post_id');
     }
 }

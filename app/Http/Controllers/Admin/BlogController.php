@@ -14,7 +14,7 @@ class BlogController extends Controller
     public function index()
     {
         return Inertia::render('Admin/Blogs/Index', [
-            'blogs' => BlogPost::with('category')->orderBy('created_at', 'desc')->get()
+            'blogs' => BlogPost::with('categories')->orderBy('created_at', 'desc')->get()
         ]);
     }
 
@@ -33,7 +33,8 @@ class BlogController extends Controller
         }
 
         $validated = $request->validate([
-            'category_id' => 'nullable|exists:blog_categories,id',
+            'category_ids' => 'nullable|array',
+            'category_ids.*' => 'exists:blog_categories,id',
             'title' => 'required|string|max:255',
             'date' => 'required|string|max:255',
             'read_time' => 'required|string|max:255',
@@ -51,7 +52,8 @@ class BlogController extends Controller
 
         $validated['slug'] = Str::slug($validated['title']);
 
-        BlogPost::create($validated);
+        $blog = BlogPost::create($validated);
+        $blog->categories()->sync($request->category_ids ?? []);
 
         return redirect()->route('admin.blogs.index')->with('success', 'Blog post created successfully.');
     }
@@ -59,7 +61,7 @@ class BlogController extends Controller
     public function edit(BlogPost $blog)
     {
         return Inertia::render('Admin/Blogs/Form', [
-            'blog' => $blog,
+            'blog' => $blog->load('categories'),
             'categories' => \App\Models\BlogCategory::orderBy('name', 'asc')->get()
         ]);
     }
@@ -72,7 +74,8 @@ class BlogController extends Controller
         }
 
         $validated = $request->validate([
-            'category_id' => 'nullable|exists:blog_categories,id',
+            'category_ids' => 'nullable|array',
+            'category_ids.*' => 'exists:blog_categories,id',
             'title' => 'required|string|max:255',
             'date' => 'required|string|max:255',
             'read_time' => 'required|string|max:255',
@@ -94,6 +97,7 @@ class BlogController extends Controller
         $validated['slug'] = Str::slug($validated['title']);
 
         $blog->update($validated);
+        $blog->categories()->sync($request->category_ids ?? []);
 
         return redirect()->route('admin.blogs.index')->with('success', 'Blog post updated successfully.');
     }

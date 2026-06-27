@@ -37,17 +37,17 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
             <span>{post.date}</span>
             <span className="text-indigo-600 dark:text-indigo-400">•</span>
             <span className="text-indigo-600 dark:text-indigo-400 font-bold">{post.read_time}</span>
-            {post.category && (
-              <>
+            {post.categories && post.categories.map((category) => (
+              <React.Fragment key={category.slug}>
                 <span className="text-indigo-600 dark:text-indigo-400">•</span>
                 <Link
-                  href={`/blog/category/${post.category.slug}`}
+                  href={`/blog/category/${category.slug}`}
                   className="text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-0.5"
                 >
-                  📂 {post.category.name}
+                  📂 {category.name}
                 </Link>
-              </>
-            )}
+              </React.Fragment>
+            ))}
           </div>
 
           {/* Main Heading */}
