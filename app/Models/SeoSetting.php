@@ -10,6 +10,9 @@ class SeoSetting extends Model
         'page_key',
         'page_title',
         'meta_description',
-        'meta_keywords'
+        'meta_keywords',
+        'google_analytics_id',
+        'google_search_console_id',
+        'custom_meta_tags'
     ];
 }

@@ -43,6 +43,12 @@ class SeoSettingSeeder extends Seeder
                 'meta_description' => 'Ready to build your next web application? Drop me a message to discuss projects, freelancing, or full-time roles.',
                 'meta_keywords' => 'Contact developer, Hire full stack dev, Hire Laravel engineer, Project quote',
             ],
+            [
+                'page_key' => 'global',
+                'page_title' => 'Global SEO Settings',
+                'meta_description' => 'Global settings for search engine verification and visitor tracking.',
+                'meta_keywords' => null,
+            ],
         ];
 
         foreach ($settings as $item) {

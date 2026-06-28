@@ -124,7 +124,128 @@ function SeoFormRow({ seoItem }) {
     );
 }
 
-export default function SeoIndex({ seoSettings }) {
+function GlobalSeoForm({ globalSeo }) {
+    const { data, setData, put, processing, errors, recentlySuccessful } = useForm({
+        google_analytics_id: globalSeo?.google_analytics_id || '',
+        google_search_console_id: globalSeo?.google_search_console_id || '',
+        custom_meta_tags: globalSeo?.custom_meta_tags || '',
+    });
+
+    const submit = (e) => {
+        e.preventDefault();
+        put(route('admin.seo.update', globalSeo.id), {
+            preserveScroll: true,
+            onSuccess: () => toast.success('Global SEO & Tracking settings updated successfully!')
+        });
+    };
+
+    return (
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm">
+            {/* Card Head */}
+            <div className="p-5 border-b border-gray-100 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-900/50 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-xs tracking-wide uppercase border border-indigo-100/30 dark:border-indigo-900/30">
+                        GL
+                    </div>
+                    <h3 className="text-base font-bold text-gray-900 dark:text-white">
+                        Global Tracking & Search Integrations
+                    </h3>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">
+                    Site-Wide Config
+                </span>
+            </div>
+
+            {/* Form Content */}
+            <form onSubmit={submit} className="p-6 space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Google Analytics ID */}
+                    <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2 flex items-center gap-1.5">
+                            <Tag className="w-3.5 h-3.5" /> Google Analytics ID (GA4)
+                        </label>
+                        <input
+                            type="text"
+                            className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                            value={data.google_analytics_id}
+                            onChange={(e) => setData('google_analytics_id', e.target.value)}
+                            placeholder="e.g. G-XXXXXXXXXX"
+                        />
+                        {errors.google_analytics_id && (
+                            <span className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                                <AlertCircle className="w-3 h-3" /> {errors.google_analytics_id}
+                            </span>
+                        )}
+                        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1.5 leading-relaxed">
+                            Enter your Google Analytics measurement ID to track visits and SPA page views automatically.
+                        </p>
+                    </div>
+
+                    {/* Google Search Console ID */}
+                    <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2 flex items-center gap-1.5">
+                            <Search className="w-3.5 h-3.5" /> Google Search Console ID
+                        </label>
+                        <input
+                            type="text"
+                            className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                            value={data.google_search_console_id}
+                            onChange={(e) => setData('google_search_console_id', e.target.value)}
+                            placeholder="e.g. a8b9c10d..."
+                        />
+                        {errors.google_search_console_id && (
+                            <span className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                                <AlertCircle className="w-3 h-3" /> {errors.google_search_console_id}
+                            </span>
+                        )}
+                        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1.5 leading-relaxed">
+                            Enter only the code from the google-site-verification meta tag to verify site ownership.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Custom Meta Tags */}
+                <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2 flex items-center gap-1.5">
+                        <FileText className="w-3.5 h-3.5" /> Custom Header Meta Tags & Scripts
+                    </label>
+                    <textarea
+                        rows={4}
+                        className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-[13px] font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all resize-none"
+                        value={data.custom_meta_tags}
+                        onChange={(e) => setData('custom_meta_tags', e.target.value)}
+                        placeholder="e.g. &lt;meta name=&quot;author&quot; content=&quot;Developer&quot; /&gt;&#10;&lt;script&gt;...&lt;/script&gt;"
+                    />
+                    {errors.custom_meta_tags && (
+                        <span className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                            <AlertCircle className="w-3 h-3" /> {errors.custom_meta_tags}
+                        </span>
+                    )}
+                    <p className="text-[10px] text-yellow-600 dark:text-yellow-500 mt-1.5 font-medium">
+                        ⚠️ Warning: Paste only valid HTML tags (&lt;meta&gt;, &lt;script&gt;, &lt;link&gt;). Incorrect tags can break site rendering.
+                    </p>
+                </div>
+
+                {/* Save Action Footer */}
+                <div className="pt-3 border-t border-gray-100 dark:border-gray-800/50 flex items-center justify-between">
+                    <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400 h-5">
+                        {recentlySuccessful && "✨ Global settings updated!"}
+                    </div>
+                    <button
+                        type="submit"
+                        disabled={processing}
+                        className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-xl shadow-sm transition-all duration-200 disabled:opacity-50"
+                    >
+                        <Save className="w-3.5 h-3.5" />
+                        {processing ? 'Saving...' : 'Save Global Integrations'}
+                    </button>
+                </div>
+            </form>
+        </div>
+    );
+}
+
+export default function SeoIndex({ seoSettings, globalSeo }) {
     return (
         <AuthenticatedLayout
             header={
@@ -154,6 +275,13 @@ export default function SeoIndex({ seoSettings }) {
                                 The metadata populated here feeds Google Search snippets, Facebook Open Graph, and Twitter cards instantly. Keep titles descriptive and descriptions around 120-160 characters for maximum readability and SERP performance.
                             </p>
                         </div>
+                    </div>
+
+                    {/* Global Integrations Form */}
+                    {globalSeo && <GlobalSeoForm globalSeo={globalSeo} />}
+
+                    <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Page-Specific Metadata</h3>
                     </div>
 
                     {/* Responsive Grid of Editable Rows */}

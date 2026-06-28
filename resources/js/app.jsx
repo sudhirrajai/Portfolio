@@ -1,13 +1,22 @@
 import '../css/app.css';
 import './bootstrap';
 
-import { createInertiaApp } from '@inertiajs/react';
+import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from '@/Components/ThemeProvider';
 import { Toaster } from 'sonner';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+
+router.on('navigate', (event) => {
+    if (window.gtag && window.GA_MEASUREMENT_ID) {
+        window.gtag('config', window.GA_MEASUREMENT_ID, {
+            page_path: event.detail.page.url,
+            page_title: document.title,
+        });
+    }
+});
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
