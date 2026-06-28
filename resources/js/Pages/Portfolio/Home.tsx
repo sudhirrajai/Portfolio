@@ -16,6 +16,12 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
 
   if (!profile) return null;
 
+  const firstName = profile.name ? profile.name.split(' ')[0] : 'Sudhir';
+  const role = profile.role || 'Full-Stack Developer';
+  const roleParts = role.split(' ');
+  const part1 = roleParts.slice(0, Math.ceil(roleParts.length / 2)).join(' ').toLowerCase();
+  const part2 = roleParts.slice(Math.ceil(roleParts.length / 2)).join(' ').toLowerCase();
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -48,7 +54,7 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
                 transition={{ delay: 0.4 }}
                 className="bg-[#ff6bff] border pf-border px-3 md:px-6 py-2 md:py-4 rounded-[20px] md:rounded-[40px] text-black"
               >
-                {profile.name.split(' ')[0]}
+                {firstName}
               </motion.span>
             </div>
             <div className="flex items-center mt-4 md:mt-6">
@@ -56,18 +62,20 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="border pf-border px-3 md:px-6 py-2 md:py-4 bg-white dark:bg-black mr-2"
+                className={`border pf-border px-3 md:px-6 py-2 md:py-4 bg-white dark:bg-black ${part2 ? 'mr-2' : ''}`}
               >
-                full-stack
+                {part1}
               </motion.span>
-              <motion.span
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="border pf-border px-3 md:px-6 py-2 md:py-4 bg-white dark:bg-black"
-              >
-                developer
-              </motion.span>
+              {part2 && (
+                <motion.span
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                  className="border pf-border px-3 md:px-6 py-2 md:py-4 bg-white dark:bg-black"
+                >
+                  {part2}
+                </motion.span>
+              )}
             </div>
           </h1>
           <motion.p
