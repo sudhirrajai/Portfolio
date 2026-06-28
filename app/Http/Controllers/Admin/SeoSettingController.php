@@ -12,9 +12,19 @@ class SeoSettingController extends Controller
 {
     public function index()
     {
+        $globalSeo = SeoSetting::where('page_key', 'global')->first();
+        if (!$globalSeo) {
+            $globalSeo = SeoSetting::create([
+                'page_key' => 'global',
+                'page_title' => 'Global SEO Settings',
+                'meta_description' => 'Global settings for search engine verification and visitor tracking.',
+                'meta_keywords' => null,
+            ]);
+        }
+
         return Inertia::render('Admin/Seo/Index', [
             'seoSettings' => SeoSetting::where('page_key', '!=', 'global')->orderBy('page_key', 'asc')->get(),
-            'globalSeo' => SeoSetting::where('page_key', 'global')->first(),
+            'globalSeo' => $globalSeo,
         ]);
     }
 
