@@ -306,4 +306,7 @@ Route::middleware('auth')->group(function () {
     Route::post('admin/mail/test', [\App\Http\Controllers\Admin\MailSettingsController::class, 'sendTestMail'])->name('admin.mail.test');
 });
 
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'sitemap']);
+Route::get('/robots.txt', [\App\Http\Controllers\SitemapController::class, 'robots']);
+
 require __DIR__.'/auth.php';
