@@ -129,6 +129,8 @@ function GlobalSeoForm({ globalSeo }) {
         google_analytics_id: globalSeo?.google_analytics_id || '',
         google_search_console_id: globalSeo?.google_search_console_id || '',
         custom_meta_tags: globalSeo?.custom_meta_tags || '',
+        google_analytics_property_id: globalSeo?.google_analytics_property_id || '',
+        google_analytics_credentials_json: globalSeo?.google_analytics_credentials_json || '',
     });
 
     const submit = (e) => {
@@ -162,7 +164,7 @@ function GlobalSeoForm({ globalSeo }) {
                     {/* Google Analytics ID */}
                     <div>
                         <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2 flex items-center gap-1.5">
-                            <Tag className="w-3.5 h-3.5" /> Google Analytics ID (GA4)
+                            <Tag className="w-3.5 h-3.5" /> Google Analytics Measurement ID (gtag)
                         </label>
                         <input
                             type="text"
@@ -177,7 +179,7 @@ function GlobalSeoForm({ globalSeo }) {
                             </span>
                         )}
                         <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1.5 leading-relaxed">
-                            Enter your Google Analytics measurement ID to track visits and SPA page views automatically.
+                            Used for front-end tracking scripts. Tracks visits and SPA page views automatically.
                         </p>
                     </div>
 
@@ -199,18 +201,70 @@ function GlobalSeoForm({ globalSeo }) {
                             </span>
                         )}
                         <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1.5 leading-relaxed">
-                            Enter only the code from the google-site-verification meta tag to verify site ownership.
+                            Enter only the token value of the google-site-verification meta tag to verify site ownership.
                         </p>
                     </div>
                 </div>
 
+                <div className="pt-4 border-t border-gray-100 dark:border-gray-800/50">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-4">
+                        Google Analytics Dashboard Reporting API (GA4)
+                    </h4>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* GA4 Property ID */}
+                        <div className="md:col-span-1">
+                            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2">
+                                GA4 Property ID
+                            </label>
+                            <input
+                                type="text"
+                                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                                value={data.google_analytics_property_id}
+                                onChange={(e) => setData('google_analytics_property_id', e.target.value)}
+                                placeholder="e.g. 312847192"
+                            />
+                            {errors.google_analytics_property_id && (
+                                <span className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                                    <AlertCircle className="w-3 h-3" /> {errors.google_analytics_property_id}
+                                </span>
+                            )}
+                            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1.5 leading-relaxed">
+                                The numeric property ID (found under GA4 Admin &gt; Property Settings).
+                            </p>
+                        </div>
+
+                        {/* Service Account JSON credentials */}
+                        <div className="md:col-span-2">
+                            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2">
+                                Google Cloud Service Account JSON Key
+                            </label>
+                            <textarea
+                                rows={3}
+                                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all resize-none"
+                                value={data.google_analytics_credentials_json}
+                                onChange={(e) => setData('google_analytics_credentials_json', e.target.value)}
+                                placeholder='{ "type": "service_account", "project_id": ... }'
+                            />
+                            {errors.google_analytics_credentials_json && (
+                                <span className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                                    <AlertCircle className="w-3 h-3" /> {errors.google_analytics_credentials_json}
+                                </span>
+                            )}
+                            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1.5 leading-relaxed">
+                                Paste the complete contents of the downloaded Google Cloud IAM Service Account JSON key. Note: Ensure this service account has **Viewer** permissions in Google Analytics.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Custom Meta Tags */}
-                <div>
+                <div className="pt-4 border-t border-gray-100 dark:border-gray-800/50">
                     <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2 flex items-center gap-1.5">
                         <FileText className="w-3.5 h-3.5" /> Custom Header Meta Tags & Scripts
                     </label>
                     <textarea
-                        rows={4}
+                        rows={3}
                         className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-[13px] font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all resize-none"
                         value={data.custom_meta_tags}
                         onChange={(e) => setData('custom_meta_tags', e.target.value)}

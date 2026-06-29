@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import { Eye, Users, MessageSquare, Briefcase, FileText, ArrowUpRight, Globe, Smartphone, Monitor } from 'lucide-react';
 
-export default function Dashboard({ stats, top_pages, top_referrers, browsers, platforms, chart_data }) {
+export default function Dashboard({ stats, top_pages, top_referrers, browsers, platforms, chart_data, data_source }) {
     
     // Simple helper to calculate relative percentages for native CSS visual bars
     const maxViews = Math.max(...chart_data.map(d => d.views), 1);
@@ -52,9 +52,19 @@ export default function Dashboard({ stats, top_pages, top_referrers, browsers, p
                     <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200 tracking-tight">
                         Portfolio Metrics Overview
                     </h2>
-                    <span className="text-xs font-medium bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded-full animate-pulse">
-                        ● Monitoring Live
-                    </span>
+                    <div className="flex items-center gap-2">
+                        {data_source === 'google_analytics' ? (
+                            <span className="text-[10px] uppercase font-bold tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50 px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                                Google Analytics Active
+                            </span>
+                        ) : (
+                            <span className="text-[10px] uppercase font-bold tracking-wider bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-indigo-100/50 dark:border-indigo-900/40 px-2.5 py-1 rounded-full flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                                Local Database Analytics
+                            </span>
+                        )}
+                    </div>
                 </div>
             }
         >

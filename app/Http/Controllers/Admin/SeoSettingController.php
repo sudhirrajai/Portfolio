@@ -35,6 +35,8 @@ class SeoSettingController extends Controller
                 'google_analytics_id' => 'nullable|string|max:50',
                 'google_search_console_id' => 'nullable|string|max:100',
                 'custom_meta_tags' => 'nullable|string',
+                'google_analytics_property_id' => 'nullable|string|max:50',
+                'google_analytics_credentials_json' => 'nullable|string',
             ]);
         } else {
             $validated = $request->validate([
