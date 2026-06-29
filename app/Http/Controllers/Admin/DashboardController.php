@@ -9,6 +9,8 @@ use App\Models\Visit;
 use App\Models\Project;
 use App\Models\BlogPost;
 use App\Models\Message;
+use App\Models\SeoSetting;
+use App\Services\GoogleAnalyticsService;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
