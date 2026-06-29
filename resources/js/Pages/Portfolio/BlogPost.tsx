@@ -27,7 +27,11 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
 
   return (
     <>
-      <SEOHead title={post.title} description={post.excerpt} />
+      <SEOHead 
+        title={post.title} 
+        description={post.excerpt} 
+        keywords={post.tags && Array.isArray(post.tags) ? post.tags.join(', ') : (typeof post.tags === 'string' ? post.tags : undefined)} 
+      />
       <div className="pf-page">
         <Navbar />
         <PageContainer className="max-w-3xl py-8">

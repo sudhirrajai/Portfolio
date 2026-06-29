@@ -43,7 +43,7 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
               <motion.span
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.05, duration: 0.3 }}
                 className="border pf-border px-3 md:px-6 py-2 md:py-4 bg-white dark:bg-black mr-2"
               >
                 Hi, I'm
@@ -51,7 +51,7 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
               <motion.span
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.05, duration: 0.3 }}
                 className="bg-[#ff6bff] border pf-border px-3 md:px-6 py-2 md:py-4 rounded-[20px] md:rounded-[40px] text-black"
               >
                 {firstName}
@@ -61,7 +61,7 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
               <motion.span
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.1, duration: 0.3 }}
                 className={`border pf-border px-3 md:px-6 py-2 md:py-4 bg-white dark:bg-black ${part2 ? 'mr-2' : ''}`}
               >
                 {part1}
@@ -70,7 +70,7 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
                 <motion.span
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.6 }}
+                  transition={{ delay: 0.1, duration: 0.3 }}
                   className="border pf-border px-3 md:px-6 py-2 md:py-4 bg-white dark:bg-black"
                 >
                   {part2}
@@ -81,7 +81,7 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
           <motion.p
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.7 }}
+            transition={{ delay: 0.15, duration: 0.3 }}
             className="text-sm md:text-base lg:text-[18px] text-black dark:text-gray-300 max-w-2xl mx-auto"
           >
             {profile.summary}
@@ -90,7 +90,7 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.8 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
               className="mt-8 flex justify-center"
             >
               <a 

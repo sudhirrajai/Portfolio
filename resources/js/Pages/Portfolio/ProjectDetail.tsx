@@ -104,7 +104,11 @@ const ProjectDetail = ({ project }) => {
 
   return (
     <>
-      <SEOHead title={project.title} description={project.summary} />
+      <SEOHead 
+        title={project.title} 
+        description={project.summary} 
+        keywords={project.stack && Array.isArray(project.stack) ? project.stack.join(', ') : undefined} 
+      />
       <Navbar />
 
       <main className="flex h-screen justify-center items-start w-full relative bg-white dark:bg-[#0a0a0a] mx-auto my-0 max-lg:flex-col max-lg:h-auto transition-colors duration-300">
