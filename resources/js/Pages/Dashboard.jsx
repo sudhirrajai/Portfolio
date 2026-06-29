@@ -1,34 +1,40 @@
+import { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import { Eye, Users, MessageSquare, Briefcase, FileText, ArrowUpRight, Globe, Smartphone, Monitor } from 'lucide-react';
 
-export default function Dashboard({ stats, top_pages, top_referrers, browsers, platforms, chart_data, data_source }) {
-    
+export default function Dashboard({ local_data, ga_data, content_stats }) {
+    const [activeTab, setActiveTab] = useState(ga_data ? 'google_analytics' : 'local');
+
+    // Select the active dataset based on toggle
+    const activeData = activeTab === 'google_analytics' && ga_data ? ga_data : local_data;
+    const { stats, top_pages, top_referrers, browsers, platforms, chart_data } = activeData;
+
     // Simple helper to calculate relative percentages for native CSS visual bars
-    const maxViews = Math.max(...chart_data.map(d => d.views), 1);
-    const maxTopPageView = Math.max(...top_pages.map(p => p.total_views), 1);
-    const maxReferrer = Math.max(...top_referrers.map(r => r.occurrences), 1);
+    const maxViews = Math.max(...(chart_data || []).map(d => d.views), 1);
+    const maxTopPageView = Math.max(...(top_pages || []).map(p => p.total_views), 1);
+    const maxReferrer = Math.max(...(top_referrers || []).map(r => r.occurrences), 1);
 
     const coreStats = [
         { 
-            label: "Today's Views", 
-            value: stats.today_views, 
+            label: activeTab === 'google_analytics' ? "Today's Views (GA4)" : "Today's Views (Local)", 
+            value: stats.today_views || 0, 
             icon: Eye, 
             color: "bg-indigo-500", 
             lightColor: "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400",
-            desc: `${stats.today_uniques} unique visitors today`
+            desc: `${stats.today_uniques || 0} unique visitors today`
         },
         { 
-            label: 'Total Views', 
-            value: stats.total_views, 
+            label: activeTab === 'google_analytics' ? "Total Views (GA4)" : "Total Views (Local)", 
+            value: stats.total_views || 0, 
             icon: Globe, 
             color: "bg-emerald-500",
             lightColor: "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400",
-            desc: `${stats.unique_visitors} all-time uniques`
+            desc: `${stats.unique_visitors || 0} all-time uniques`
         },
         { 
             label: 'User Queries', 
-            value: stats.unread_messages, 
+            value: content_stats.unread_messages, 
             icon: MessageSquare, 
             color: "bg-amber-500",
             lightColor: "bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400",
@@ -37,33 +43,52 @@ export default function Dashboard({ stats, top_pages, top_referrers, browsers, p
         },
         { 
             label: 'Active Content', 
-            value: stats.projects + stats.blogs, 
+            value: content_stats.projects + content_stats.blogs, 
             icon: Briefcase, 
             color: "bg-pink-500",
             lightColor: "bg-pink-50 dark:bg-pink-950/40 text-pink-600 dark:text-pink-400",
-            desc: `${stats.projects} Projects • ${stats.blogs} Posts`
+            desc: `${content_stats.projects} Projects • ${content_stats.blogs} Posts`
         }
     ];
 
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200 tracking-tight">
                         Portfolio Metrics Overview
                     </h2>
-                    <div className="flex items-center gap-2">
-                        {data_source === 'google_analytics' ? (
-                            <span className="text-[10px] uppercase font-bold tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50 px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-                                Google Analytics Active
-                            </span>
-                        ) : (
-                            <span className="text-[10px] uppercase font-bold tracking-wider bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-indigo-100/50 dark:border-indigo-900/40 px-2.5 py-1 rounded-full flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                                Local Database Analytics
-                            </span>
-                        )}
+                    
+                    {/* Glassmorphic Tab Selector */}
+                    <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-900/60 p-1.5 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 self-start sm:self-auto">
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('local')}
+                            className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 ${
+                                activeTab === 'local'
+                                    ? 'bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 shadow-sm border border-gray-200/10 dark:border-gray-700/10'
+                                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                            }`}
+                        >
+                            Local DB Logs
+                        </button>
+                        <button
+                            type="button"
+                            disabled={!ga_data}
+                            onClick={() => setActiveTab('google_analytics')}
+                            className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 relative flex items-center gap-1.5 ${
+                                !ga_data
+                                    ? 'opacity-40 cursor-not-allowed text-gray-400'
+                                    : activeTab === 'google_analytics'
+                                    ? 'bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 shadow-sm border border-gray-200/10 dark:border-gray-700/10'
+                                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                            }`}
+                        >
+                            {ga_data && (
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping shrink-0"></span>
+                            )}
+                            Google Analytics (GA4)
+                        </button>
                     </div>
                 </div>
             }
