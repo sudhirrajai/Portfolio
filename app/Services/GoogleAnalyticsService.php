@@ -7,6 +7,7 @@ use Google\Analytics\Data\V1beta\DateRange;
 use Google\Analytics\Data\V1beta\Dimension;
 use Google\Analytics\Data\V1beta\Metric;
 use Google\Analytics\Data\V1beta\OrderBy;
+use Google\Analytics\Data\V1beta\RunReportRequest;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -42,9 +43,9 @@ class GoogleAnalyticsService
 
         try {
             // Fetch total views and unique active users for last 30 days
-            $response = $this->client->runReport([
+            $response = $this->client->runReport(new RunReportRequest([
                 'property' => 'properties/' . $propertyId,
-                'dateRanges' => [
+                'date_ranges' => [
                     new DateRange([
                         'start_date' => '30daysAgo',
                         'end_date' => 'today',
@@ -54,12 +55,12 @@ class GoogleAnalyticsService
                     new Metric(['name' => 'screenPageViews']),
                     new Metric(['name' => 'activeUsers']),
                 ],
-            ]);
+            ]));
 
             // Fetch today's views and uniques
-            $todayResponse = $this->client->runReport([
+            $todayResponse = $this->client->runReport(new RunReportRequest([
                 'property' => 'properties/' . $propertyId,
-                'dateRanges' => [
+                'date_ranges' => [
                     new DateRange([
                         'start_date' => 'today',
                         'end_date' => 'today',
@@ -69,7 +70,7 @@ class GoogleAnalyticsService
                     new Metric(['name' => 'screenPageViews']),
                     new Metric(['name' => 'activeUsers']),
                 ],
-            ]);
+            ]));
 
             $totalViews = 0;
             $uniqueUsers = 0;
@@ -108,9 +109,9 @@ class GoogleAnalyticsService
 
         try {
             // Run report for the last 14 days
-            $response = $this->client->runReport([
+            $response = $this->client->runReport(new RunReportRequest([
                 'property' => 'properties/' . $propertyId,
-                'dateRanges' => [
+                'date_ranges' => [
                     new DateRange([
                         'start_date' => '14daysAgo',
                         'end_date' => 'today',
@@ -123,7 +124,7 @@ class GoogleAnalyticsService
                     new Metric(['name' => 'screenPageViews']),
                     new Metric(['name' => 'activeUsers']),
                 ],
-                'orderBys' => [
+                'order_bys' => [
                     new OrderBy([
                         'dimension' => new OrderBy\DimensionOrderBy([
                             'dimension_name' => 'date',
@@ -131,7 +132,7 @@ class GoogleAnalyticsService
                         ])
                     ])
                 ]
-            ]);
+            ]));
 
             $chartData = [];
             foreach ($response->getRows() as $row) {
@@ -164,9 +165,9 @@ class GoogleAnalyticsService
         }
 
         try {
-            $response = $this->client->runReport([
+            $response = $this->client->runReport(new RunReportRequest([
                 'property' => 'properties/' . $propertyId,
-                'dateRanges' => [
+                'date_ranges' => [
                     new DateRange([
                         'start_date' => '30daysAgo',
                         'end_date' => 'today',
@@ -179,7 +180,7 @@ class GoogleAnalyticsService
                     new Metric(['name' => 'screenPageViews']),
                 ],
                 'limit' => 5,
-            ]);
+            ]));
 
             $pages = [];
             foreach ($response->getRows() as $row) {
@@ -202,9 +203,9 @@ class GoogleAnalyticsService
         }
 
         try {
-            $response = $this->client->runReport([
+            $response = $this->client->runReport(new RunReportRequest([
                 'property' => 'properties/' . $propertyId,
-                'dateRanges' => [
+                'date_ranges' => [
                     new DateRange([
                         'start_date' => '30daysAgo',
                         'end_date' => 'today',
@@ -217,7 +218,7 @@ class GoogleAnalyticsService
                     new Metric(['name' => 'sessions']),
                 ],
                 'limit' => 5,
-            ]);
+            ]));
 
             $referrers = [];
             foreach ($response->getRows() as $row) {
@@ -241,9 +242,9 @@ class GoogleAnalyticsService
 
         try {
             // Fetch Browsers
-            $browserResponse = $this->client->runReport([
+            $browserResponse = $this->client->runReport(new RunReportRequest([
                 'property' => 'properties/' . $propertyId,
-                'dateRanges' => [
+                'date_ranges' => [
                     new DateRange([
                         'start_date' => '30daysAgo',
                         'end_date' => 'today',
@@ -256,12 +257,12 @@ class GoogleAnalyticsService
                     new Metric(['name' => 'sessions']),
                 ],
                 'limit' => 5,
-            ]);
+            ]));
 
             // Fetch OS Platforms
-            $osResponse = $this->client->runReport([
+            $osResponse = $this->client->runReport(new RunReportRequest([
                 'property' => 'properties/' . $propertyId,
-                'dateRanges' => [
+                'date_ranges' => [
                     new DateRange([
                         'start_date' => '30daysAgo',
                         'end_date' => 'today',
@@ -274,7 +275,7 @@ class GoogleAnalyticsService
                     new Metric(['name' => 'sessions']),
                 ],
                 'limit' => 5,
-            ]);
+            ]));
 
             $browsers = [];
             foreach ($browserResponse->getRows() as $row) {
