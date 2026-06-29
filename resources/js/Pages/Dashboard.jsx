@@ -141,7 +141,7 @@ export default function Dashboard({ local_data, ga_data, content_stats }) {
                                 <Eye className="w-4 h-4 text-indigo-500" /> 7-Day Page View Activity
                             </h3>
                             <div className="h-[240px] flex items-end gap-3 pt-4">
-                                {chart_data.map((day, idx) => {
+                                {(chart_data || []).map((day, idx) => {
                                     const pct = Math.max((day.views / maxViews) * 100, 4); // Min height to keep visible
                                     return (
                                         <div key={idx} className="flex-1 flex flex-col items-center h-full group relative">
@@ -187,7 +187,7 @@ export default function Dashboard({ local_data, ga_data, content_stats }) {
                                             <span>Total</span>
                                         </div>
                                         <div className="space-y-2">
-                                            {platforms.length === 0 ? (
+                                            {(!platforms || platforms.length === 0) ? (
                                                 <span className="text-xs text-gray-400 italic">No visits recorded.</span>
                                             ) : (
                                                 platforms.map((plat, idx) => (
@@ -208,7 +208,7 @@ export default function Dashboard({ local_data, ga_data, content_stats }) {
                                             <span>Top Browsers</span>
                                         </div>
                                         <div className="flex flex-wrap gap-2">
-                                            {browsers.length === 0 ? (
+                                            {(!browsers || browsers.length === 0) ? (
                                                 <span className="text-xs text-gray-400 italic">No browser data.</span>
                                             ) : (
                                                 browsers.map((b, idx) => (
@@ -237,9 +237,9 @@ export default function Dashboard({ local_data, ga_data, content_stats }) {
                                 <span className="text-[11px] font-semibold text-gray-400">Hits</span>
                             </div>
                             <div className="space-y-2 flex-1">
-                                {top_pages.length === 0 ? (
+                                {(!top_pages || top_pages.length === 0) ? (
                                     <div className="text-center py-6 text-xs text-gray-400 italic">No analytics logged yet. Visit pages on the frontend to populate!</div>
-                                ) : (
+                               ) : (
                                     top_pages.map((page, idx) => {
                                         const pct = Math.max((page.total_views / maxTopPageView) * 100, 1);
                                         return (
@@ -271,7 +271,7 @@ export default function Dashboard({ local_data, ga_data, content_stats }) {
                                 <span className="text-[11px] font-semibold text-gray-400">Total</span>
                             </div>
                             <div className="space-y-2 flex-1">
-                                {top_referrers.length === 0 ? (
+                                {(!top_referrers || top_referrers.length === 0) ? (
                                     <div className="text-center py-6 text-xs text-gray-400 italic">No traffic sources recorded.</div>
                                 ) : (
                                     top_referrers.map((ref, idx) => {
