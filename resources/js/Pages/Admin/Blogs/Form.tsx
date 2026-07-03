@@ -13,10 +13,17 @@ import {
 } from 'lucide-react';
 
 import { toast } from 'sonner';
+import Modal from '@/Components/Modal';
 
 const TiptapEditor = ({ content, onChange }) => {
     const [isHtmlMode, setIsHtmlMode] = useState(false);
     const [htmlSource, setHtmlSource] = useState(content);
+
+    // Modal States
+    const [imageModalOpen, setImageModalOpen] = useState(false);
+    const [imageForm, setImageForm] = useState({ src: '', alt: '', title: '', pos: null as number | null });
+    const [linkModalOpen, setLinkModalOpen] = useState(false);
+    const [linkUrl, setLinkUrl] = useState('');
 
     const editor = useEditor({
         extensions: [
@@ -57,27 +64,13 @@ const TiptapEditor = ({ content, onChange }) => {
                     if (imagePos !== null) {
                         const node = view.state.doc.nodeAt(imagePos);
                         if (node) {
-                            const currentAlt = node.attrs.alt || '';
-                            const currentTitle = node.attrs.title || '';
-                            const currentSrc = node.attrs.src || '';
-
-                            const newAlt = prompt('Edit Image Alt Text (essential for Google SEO / accessibility):', currentAlt);
-                            if (newAlt === null) return true; // cancelled
-
-                            const newTitle = prompt('Edit Image Title (hover tooltip, optional):', currentTitle);
-                            if (newTitle === null) return true;
-
-                            const newSrc = prompt('Edit Image URL (or keep current):', currentSrc);
-                            if (newSrc === null) return true;
-
-                            const transaction = view.state.tr.setNodeMarkup(imagePos, undefined, {
-                                ...node.attrs,
-                                alt: newAlt,
-                                title: newTitle,
-                                src: newSrc
+                            setImageForm({
+                                src: node.attrs.src || '',
+                                alt: node.attrs.alt || '',
+                                title: node.attrs.title || '',
+                                pos: imagePos
                             });
-                            view.dispatch(transaction);
-                            toast.success('Image SEO tags updated successfully!');
+                            setImageModalOpen(true);
                             return true;
                         }
                     }
@@ -109,40 +102,85 @@ const TiptapEditor = ({ content, onChange }) => {
         if (isImageSelected) {
             const attrs = editor.getAttributes('image');
             
-            const newUrl = prompt('Edit Image Web URL:', attrs.src);
-            if (newUrl === null) return; // cancelled
-            
-            const newAlt = prompt('Edit Image Alt Text (essential for SEO & accessibility):', attrs.alt || '');
-            if (newAlt === null) return;
-            
-            const newTitle = prompt('Edit Image Title Attribute (optional tooltip):', attrs.title || '');
-            if (newTitle === null) return;
+            let imagePos = null;
+            editor.state.doc.descendants((node, pos) => {
+                if (node.type.name === 'image' && node.attrs.src === attrs.src) {
+                    imagePos = pos;
+                    return false;
+                }
+            });
 
-            editor.chain().focus().setImage({ src: newUrl, alt: newAlt, title: newTitle }).run();
-            toast.success('Image alt tag / title updated successfully!');
+            setImageForm({
+                src: attrs.src || '',
+                alt: attrs.alt || '',
+                title: attrs.title || '',
+                pos: imagePos
+            });
         } else {
-            const url = prompt('Enter Image Web URL:');
-            if (!url) return;
-            
-            const alt = prompt('Enter Image Alt Text (highly recommended for SEO):') || '';
-            const title = prompt('Enter Image Title Attribute (optional tooltip):') || '';
-
-            editor.chain().focus().setImage({ src: url, alt: alt, title: title }).run();
-            toast.success('Image inserted with SEO alt tag!');
+            setImageForm({
+                src: '',
+                alt: '',
+                title: '',
+                pos: null
+            });
         }
+        setImageModalOpen(true);
+    };
+
+    const saveImageForm = (e) => {
+        e.preventDefault();
+        if (!editor) return;
+
+        if (imageForm.pos !== null) {
+            const node = editor.state.doc.nodeAt(imageForm.pos);
+            if (node) {
+                const transaction = editor.view.state.tr.setNodeMarkup(imageForm.pos, undefined, {
+                    ...node.attrs,
+                    src: imageForm.src,
+                    alt: imageForm.alt,
+                    title: imageForm.title
+                });
+                editor.view.dispatch(transaction);
+                toast.success('Image SEO attributes updated!');
+            }
+        } else {
+            editor.chain().focus().setImage({
+                src: imageForm.src,
+                alt: imageForm.alt,
+                title: imageForm.title
+            }).run();
+            toast.success('Image inserted into draft!');
+        }
+
+        setImageModalOpen(false);
     };
 
     const setLink = () => {
         if (!editor) return;
-        const previousUrl = editor.getAttributes('link').href;
-        const url = prompt('Enter Hyperlink URL:', previousUrl);
+        const previousUrl = editor.getAttributes('link').href || '';
+        setLinkUrl(previousUrl);
+        setLinkModalOpen(true);
+    };
 
-        if (url === null) return; // cancelled
-        if (url === '') {
+    const saveLinkForm = (e) => {
+        e.preventDefault();
+        if (!editor) return;
+
+        if (linkUrl === '') {
             editor.chain().focus().extendMarkRange('link').unsetLink().run();
-            return;
+            toast.success('Link removed.');
+        } else {
+            editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
+            toast.success('Hyperlink saved successfully!');
         }
-        editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+        setLinkModalOpen(false);
+    };
+
+    const removeLink = () => {
+        if (!editor) return;
+        editor.chain().focus().extendMarkRange('link').unsetLink().run();
+        toast.success('Link removed.');
+        setLinkModalOpen(false);
     };
 
     if (!editor) return null;
@@ -208,7 +246,7 @@ const TiptapEditor = ({ content, onChange }) => {
                         <div className="w-px h-6 bg-gray-200 dark:bg-gray-800 mx-1 hidden sm:block" />
 
                         {/* Embeds Group */}
-                        <button type="button" title="Insert Image URL" onClick={addImageUrl} className={btnStyle(editor.isActive('image'))}>
+                        <button type="button" title="Insert Image" onClick={addImageUrl} className={btnStyle(editor.isActive('image'))}>
                             <ImageIcon className="w-4 h-4" />
                         </button>
                         <button type="button" title="Insert Hyperlink" onClick={setLink} className={btnStyle(editor.isActive('link'))}>
@@ -264,6 +302,119 @@ const TiptapEditor = ({ content, onChange }) => {
                     </div>
                 )}
             </div>
+
+            {/* Beautiful Modal Dialogs */}
+            
+            {/* Image Properties Modal */}
+            <Modal show={imageModalOpen} onClose={() => setImageModalOpen(false)} maxWidth="md">
+                <form onSubmit={saveImageForm} className="p-6 text-gray-900 dark:text-white bg-white dark:bg-gray-900">
+                    <h3 className="text-base font-bold text-gray-900 dark:text-white uppercase tracking-wider border-b border-gray-100 dark:border-gray-800 pb-3 mb-4">
+                        {imageForm.pos !== null ? 'Configure Image Properties' : 'Insert Image'}
+                    </h3>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">
+                                Image URL
+                            </label>
+                            <input
+                                type="text"
+                                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-mono text-xs"
+                                value={imageForm.src}
+                                onChange={e => setImageForm({ ...imageForm, src: e.target.value })}
+                                placeholder="https://example.com/image.jpg"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">
+                                Alt Text (highly recommended for Google SEO & screen readers)
+                            </label>
+                            <input
+                                type="text"
+                                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                                value={imageForm.alt}
+                                onChange={e => setImageForm({ ...imageForm, alt: e.target.value })}
+                                placeholder="e.g. AWS console showing the creation of an S3 bucket"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">
+                                Title Attribute (optional hover tooltip)
+                            </label>
+                            <input
+                                type="text"
+                                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                                value={imageForm.title}
+                                onChange={e => setImageForm({ ...imageForm, title: e.target.value })}
+                                placeholder="e.g. Figure 1.1: S3 bucket setup"
+                            />
+                        </div>
+                    </div>
+                    <div className="mt-6 flex items-center justify-end gap-3 border-t border-gray-100 dark:border-gray-800/80 pt-4">
+                        <button
+                            type="button"
+                            onClick={() => setImageModalOpen(false)}
+                            className="px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-widest px-5 py-2.5 rounded-xl shadow-sm transition-all"
+                        >
+                            Save Properties
+                        </button>
+                    </div>
+                </form>
+            </Modal>
+
+            {/* Hyperlink Dialog Modal */}
+            <Modal show={linkModalOpen} onClose={() => setLinkModalOpen(false)} maxWidth="sm">
+                <form onSubmit={saveLinkForm} className="p-6 text-gray-900 dark:text-white bg-white dark:bg-gray-900">
+                    <h3 className="text-base font-bold text-gray-900 dark:text-white uppercase tracking-wider border-b border-gray-100 dark:border-gray-800 pb-3 mb-4">
+                        Configure Hyperlink
+                    </h3>
+                    <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">
+                            Destination URL
+                        </label>
+                        <input
+                            type="text"
+                            className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-mono text-xs"
+                            value={linkUrl}
+                            onChange={e => setLinkUrl(e.target.value)}
+                            placeholder="https://example.com"
+                            required
+                        />
+                    </div>
+                    <div className="mt-6 flex items-center justify-between border-t border-gray-100 dark:border-gray-800/80 pt-4">
+                        {editor.isActive('link') ? (
+                            <button
+                                type="button"
+                                onClick={removeLink}
+                                className="text-xs font-bold uppercase tracking-widest text-red-500 hover:text-red-700"
+                            >
+                                Remove Link
+                            </button>
+                        ) : <div />}
+                        <div className="flex items-center gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setLinkModalOpen(false)}
+                                className="px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-widest px-5 py-2.5 rounded-xl shadow-sm transition-all"
+                            >
+                                Save Link
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </Modal>
         </div>
     );
 };
