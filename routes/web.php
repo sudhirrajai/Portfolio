@@ -300,13 +300,24 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/google/callback', [\App\Http\Controllers\Admin\BookingController::class, 'handleGoogleCallback'])->name('admin.google.callback');
     Route::post('admin/google/revoke', [\App\Http\Controllers\Admin\BookingController::class, 'revokeGoogleConnection'])->name('admin.google.revoke');
 
-    // Dynamic SMTP Server Configuration & Diagnostics
     Route::get('admin/mail', [\App\Http\Controllers\Admin\MailSettingsController::class, 'index'])->name('admin.mail.index');
     Route::put('admin/mail', [\App\Http\Controllers\Admin\MailSettingsController::class, 'update'])->name('admin.mail.update');
     Route::post('admin/mail/test', [\App\Http\Controllers\Admin\MailSettingsController::class, 'sendTestMail'])->name('admin.mail.test');
+
+    Route::resource('admin/files', \App\Http\Controllers\Admin\DownloadFileController::class)->names([
+        'index' => 'admin.files.index',
+        'create' => 'admin.files.create',
+        'store' => 'admin.files.store',
+        'show' => 'admin.files.show',
+        'edit' => 'admin.files.edit',
+        'update' => 'admin.files.update',
+        'destroy' => 'admin.files.destroy',
+    ]);
 });
 
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'sitemap']);
 Route::get('/robots.txt', [\App\Http\Controllers\SitemapController::class, 'robots']);
+Route::get('/files/preview/{id}', [\App\Http\Controllers\PublicFileController::class, 'preview'])->name('files.preview');
+Route::get('/files/download/{id}', [\App\Http\Controllers\PublicFileController::class, 'download'])->name('files.download');
 
 require __DIR__.'/auth.php';

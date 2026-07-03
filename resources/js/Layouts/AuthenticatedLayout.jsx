@@ -2,7 +2,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import Dropdown from '@/Components/Dropdown';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { LayoutDashboard, Briefcase, FileText, GraduationCap, Wrench, User, Settings, LogOut, MessageSquare, Settings2, Globe, Calendar, Mail, Milestone, Tag } from 'lucide-react';
+import { LayoutDashboard, Briefcase, FileText, GraduationCap, Wrench, User, Settings, LogOut, MessageSquare, Settings2, Globe, Calendar, Mail, Milestone, Tag, FolderOpen } from 'lucide-react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
@@ -32,6 +32,7 @@ export default function AuthenticatedLayout({ header, children }) {
         { label: 'CMS / Profile Info', route: 'admin.profile.edit', pattern: 'admin.profile.*', icon: Settings2 },
         { label: 'SEO Settings', route: 'admin.seo.index', pattern: 'admin.seo.*', icon: Globe },
         { label: 'Mail & SMTP Server', route: 'admin.mail.index', pattern: 'admin.mail.*', icon: Mail },
+        { label: 'File Manager', route: 'admin.files.index', pattern: 'admin.files.*', icon: FolderOpen },
     ];
 
 
