@@ -159,5 +159,8 @@ All colors MUST be HSL.
   .pf-prose {
     @apply prose prose-indigo dark:prose-invert max-w-none text-gray-800 dark:text-gray-300 leading-relaxed;
   }
+  .pf-prose img {
+    cursor: zoom-in;
+  }
 }
 

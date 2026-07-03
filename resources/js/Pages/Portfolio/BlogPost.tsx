@@ -7,6 +7,8 @@ import { Footer } from '@/Components/Footer';
 import { CommentSection } from '@/Components/CommentSection';
 
 const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
+  const [activePreviewImage, setActivePreviewImage] = React.useState<{ src: string; alt: string } | null>(null);
+
   if (!post) {
     return (
       <div className="pf-page">
@@ -24,6 +26,17 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
       </div>
     );
   }
+
+  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'IMG') {
+      const img = target as HTMLImageElement;
+      setActivePreviewImage({
+        src: img.src,
+        alt: img.alt || post.title
+      });
+    }
+  };
 
   return (
     <>
@@ -69,7 +82,8 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
               <img 
                 src={`/storage/${post.image_path}`} 
                 alt={post.title} 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover cursor-zoom-in"
+                onClick={() => setActivePreviewImage({ src: `/storage/${post.image_path}`, alt: post.title })}
               />
             ) : (
               <div className="w-24 h-24 border-2 border-white/10 rounded-full animate-pulse pointer-events-none" />
@@ -86,6 +100,7 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
           <div 
             className="pf-prose" 
             dangerouslySetInnerHTML={{ __html: post.content }} 
+            onClick={handleContentClick}
           />
 
           {/* Bottom Tags list */}
@@ -117,6 +132,38 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
         </PageContainer>
         <Footer />
       </div>
+
+      {/* Premium Lightbox Modal for Image Preview */}
+      {activePreviewImage && (
+        <div 
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 dark:bg-black/98 backdrop-blur-md cursor-zoom-out p-4 md:p-8 animate-fade-in"
+          onClick={() => setActivePreviewImage(null)}
+        >
+          {/* Close button */}
+          <button 
+            className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all focus:outline-none z-[110]"
+            onClick={() => setActivePreviewImage(null)}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          {/* Main expanded image */}
+          <img 
+            src={activePreviewImage.src} 
+            alt={activePreviewImage.alt}
+            className="max-w-full max-h-[85vh] object-contain rounded-xl border border-white/10 shadow-2xl select-none"
+          />
+          
+          {/* Image caption */}
+          {activePreviewImage.alt && (
+            <p className="mt-4 text-xs font-bold uppercase tracking-wider text-gray-400 select-none bg-white/5 border border-white/10 px-4 py-2 rounded-full">
+              {activePreviewImage.alt}
+            </p>
+          )}
+        </div>
+      )}
     </>
   );
 };
