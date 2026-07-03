@@ -12,6 +12,8 @@ import {
     Image as ImageIcon, Undo, Redo, Minus, Eye, Code2, Save, AlertCircle
 } from 'lucide-react';
 
+import { toast } from 'sonner';
+
 const TiptapEditor = ({ content, onChange }) => {
     const [isHtmlMode, setIsHtmlMode] = useState(false);
     const [htmlSource, setHtmlSource] = useState(content);
@@ -61,9 +63,32 @@ const TiptapEditor = ({ content, onChange }) => {
     };
 
     const addImageUrl = () => {
-        const url = prompt('Enter Image Web URL:');
-        if (url && editor) {
-            editor.chain().focus().setImage({ src: url }).run();
+        if (!editor) return;
+
+        const isImageSelected = editor.isActive('image');
+        if (isImageSelected) {
+            const attrs = editor.getAttributes('image');
+            
+            const newUrl = prompt('Edit Image Web URL:', attrs.src);
+            if (newUrl === null) return; // cancelled
+            
+            const newAlt = prompt('Edit Image Alt Text (essential for SEO & accessibility):', attrs.alt || '');
+            if (newAlt === null) return;
+            
+            const newTitle = prompt('Edit Image Title Attribute (optional tooltip):', attrs.title || '');
+            if (newTitle === null) return;
+
+            editor.chain().focus().setImage({ src: newUrl, alt: newAlt, title: newTitle }).run();
+            toast.success('Image alt tag / title updated successfully!');
+        } else {
+            const url = prompt('Enter Image Web URL:');
+            if (!url) return;
+            
+            const alt = prompt('Enter Image Alt Text (highly recommended for SEO):') || '';
+            const title = prompt('Enter Image Title Attribute (optional tooltip):') || '';
+
+            editor.chain().focus().setImage({ src: url, alt: alt, title: title }).run();
+            toast.success('Image inserted with SEO alt tag!');
         }
     };
 
