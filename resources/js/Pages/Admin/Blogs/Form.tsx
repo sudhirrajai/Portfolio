@@ -127,8 +127,11 @@ const TiptapEditor = ({ content, onChange }) => {
         setImageModalOpen(true);
     };
 
-    const saveImageForm = (e) => {
-        e.preventDefault();
+    const saveImageForm = (e?: React.FormEvent) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         if (!editor) return;
 
         if (imageForm.pos !== null) {
@@ -162,8 +165,11 @@ const TiptapEditor = ({ content, onChange }) => {
         setLinkModalOpen(true);
     };
 
-    const saveLinkForm = (e) => {
-        e.preventDefault();
+    const saveLinkForm = (e?: React.FormEvent) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         if (!editor) return;
 
         if (linkUrl === '') {
@@ -307,7 +313,7 @@ const TiptapEditor = ({ content, onChange }) => {
             
             {/* Image Properties Modal */}
             <Modal show={imageModalOpen} onClose={() => setImageModalOpen(false)} maxWidth="md">
-                <form onSubmit={saveImageForm} className="p-6 text-gray-900 dark:text-white bg-white dark:bg-gray-900">
+                <div className="p-6 text-gray-900 dark:text-white bg-white dark:bg-gray-900">
                     <h3 className="text-base font-bold text-gray-900 dark:text-white uppercase tracking-wider border-b border-gray-100 dark:border-gray-800 pb-3 mb-4">
                         {imageForm.pos !== null ? 'Configure Image Properties' : 'Insert Image'}
                     </h3>
@@ -321,6 +327,13 @@ const TiptapEditor = ({ content, onChange }) => {
                                 className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-mono text-xs"
                                 value={imageForm.src}
                                 onChange={e => setImageForm({ ...imageForm, src: e.target.value })}
+                                onKeyDown={e => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        saveImageForm();
+                                    }
+                                }}
                                 placeholder="https://example.com/image.jpg"
                                 required
                             />
@@ -334,6 +347,13 @@ const TiptapEditor = ({ content, onChange }) => {
                                 className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                                 value={imageForm.alt}
                                 onChange={e => setImageForm({ ...imageForm, alt: e.target.value })}
+                                onKeyDown={e => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        saveImageForm();
+                                    }
+                                }}
                                 placeholder="e.g. AWS console showing the creation of an S3 bucket"
                             />
                         </div>
@@ -346,6 +366,13 @@ const TiptapEditor = ({ content, onChange }) => {
                                 className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                                 value={imageForm.title}
                                 onChange={e => setImageForm({ ...imageForm, title: e.target.value })}
+                                onKeyDown={e => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        saveImageForm();
+                                    }
+                                }}
                                 placeholder="e.g. Figure 1.1: S3 bucket setup"
                             />
                         </div>
@@ -359,18 +386,19 @@ const TiptapEditor = ({ content, onChange }) => {
                             Cancel
                         </button>
                         <button
-                            type="submit"
+                            type="button"
+                            onClick={() => saveImageForm()}
                             className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-widest px-5 py-2.5 rounded-xl shadow-sm transition-all"
                         >
                             Save Properties
                         </button>
                     </div>
-                </form>
+                </div>
             </Modal>
 
             {/* Hyperlink Dialog Modal */}
             <Modal show={linkModalOpen} onClose={() => setLinkModalOpen(false)} maxWidth="sm">
-                <form onSubmit={saveLinkForm} className="p-6 text-gray-900 dark:text-white bg-white dark:bg-gray-900">
+                <div className="p-6 text-gray-900 dark:text-white bg-white dark:bg-gray-900">
                     <h3 className="text-base font-bold text-gray-900 dark:text-white uppercase tracking-wider border-b border-gray-100 dark:border-gray-800 pb-3 mb-4">
                         Configure Hyperlink
                     </h3>
@@ -383,6 +411,13 @@ const TiptapEditor = ({ content, onChange }) => {
                             className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-mono text-xs"
                             value={linkUrl}
                             onChange={e => setLinkUrl(e.target.value)}
+                            onKeyDown={e => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    saveLinkForm();
+                                }
+                            }}
                             placeholder="https://example.com"
                             required
                         />
@@ -406,14 +441,15 @@ const TiptapEditor = ({ content, onChange }) => {
                                 Cancel
                             </button>
                             <button
-                                type="submit"
+                                type="button"
+                                onClick={() => saveLinkForm()}
                                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-widest px-5 py-2.5 rounded-xl shadow-sm transition-all"
                             >
                                 Save Link
                             </button>
                         </div>
                     </div>
-                </form>
+                </div>
             </Modal>
         </div>
     );
