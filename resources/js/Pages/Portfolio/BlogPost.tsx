@@ -136,12 +136,12 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
       {/* Premium Lightbox Modal for Image Preview */}
       {activePreviewImage && (
         <div 
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 dark:bg-black/98 backdrop-blur-md cursor-zoom-out p-4 md:p-8 animate-fade-in"
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/95 dark:bg-black/98 backdrop-blur-md cursor-zoom-out p-4 md:p-8 animate-fade-in"
           onClick={() => setActivePreviewImage(null)}
         >
           {/* Close button */}
           <button 
-            className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all focus:outline-none z-[110]"
+            className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all focus:outline-none z-[10000]"
             onClick={() => setActivePreviewImage(null)}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
