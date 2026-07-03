@@ -44,6 +44,46 @@ const TiptapEditor = ({ content, onChange }) => {
             attributes: {
                 class: 'prose prose-indigo dark:prose-invert max-w-none focus:outline-none min-h-[320px] px-6 py-6 dark:bg-gray-950 bg-white text-gray-900 dark:text-gray-100',
             },
+            handleDoubleClick(view, pos, event) {
+                if (event.target && event.target.nodeName === 'IMG') {
+                    let imagePos = null;
+                    view.state.doc.descendants((node, pos) => {
+                        if (node.type.name === 'image' && node.attrs.src === event.target.src) {
+                            imagePos = pos;
+                            return false;
+                        }
+                    });
+
+                    if (imagePos !== null) {
+                        const node = view.state.doc.nodeAt(imagePos);
+                        if (node) {
+                            const currentAlt = node.attrs.alt || '';
+                            const currentTitle = node.attrs.title || '';
+                            const currentSrc = node.attrs.src || '';
+
+                            const newAlt = prompt('Edit Image Alt Text (essential for Google SEO / accessibility):', currentAlt);
+                            if (newAlt === null) return true; // cancelled
+
+                            const newTitle = prompt('Edit Image Title (hover tooltip, optional):', currentTitle);
+                            if (newTitle === null) return true;
+
+                            const newSrc = prompt('Edit Image URL (or keep current):', currentSrc);
+                            if (newSrc === null) return true;
+
+                            const transaction = view.state.tr.setNodeMarkup(imagePos, undefined, {
+                                ...node.attrs,
+                                alt: newAlt,
+                                title: newTitle,
+                                src: newSrc
+                            });
+                            view.dispatch(transaction);
+                            toast.success('Image SEO tags updated successfully!');
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
         },
     });
 
@@ -216,7 +256,12 @@ const TiptapEditor = ({ content, onChange }) => {
                         placeholder="Write raw HTML markup here..."
                     />
                 ) : (
-                    <EditorContent editor={editor} />
+                    <div>
+                        <EditorContent editor={editor} />
+                        <div className="px-6 py-2.5 bg-gray-50 dark:bg-gray-900/30 border-t border-gray-100 dark:border-gray-800 text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider flex items-center gap-1.5 select-none">
+                            <span>💡 Double-click any image inside the editor to edit its URL, Alt text (SEO), and title.</span>
+                        </div>
+                    </div>
                 )}
             </div>
         </div>
