@@ -15,6 +15,11 @@ import {
 import { toast } from 'sonner';
 import Modal from '@/Components/Modal';
 
+import { Table } from '@tiptap/extension-table';
+import { TableRow } from '@tiptap/extension-table-row';
+import { TableCell } from '@tiptap/extension-table-cell';
+import { TableHeader } from '@tiptap/extension-table-header';
+
 const TiptapEditor = ({ content, onChange }) => {
     const [isHtmlMode, setIsHtmlMode] = useState(false);
     const [htmlSource, setHtmlSource] = useState(content);
@@ -38,6 +43,27 @@ const TiptapEditor = ({ content, onChange }) => {
             ImageExtension.configure({
                 HTMLAttributes: {
                     class: 'rounded-xl shadow-md my-6 max-w-full border border-gray-200 dark:border-gray-800 mx-auto block hover:shadow-lg transition-all',
+                }
+            }),
+            Table.configure({
+                resizable: true,
+                HTMLAttributes: {
+                    class: 'border-collapse border border-gray-300 dark:border-gray-700 w-full my-6 text-sm',
+                }
+            }),
+            TableRow.configure({
+                HTMLAttributes: {
+                    class: 'border-b border-gray-200 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors',
+                }
+            }),
+            TableHeader.configure({
+                HTMLAttributes: {
+                    class: 'bg-gray-50 dark:bg-gray-900/50 font-bold px-4 py-3 border border-gray-300 dark:border-gray-750 text-left',
+                }
+            }),
+            TableCell.configure({
+                HTMLAttributes: {
+                    class: 'px-4 py-3 border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-355',
                 }
             })
         ],

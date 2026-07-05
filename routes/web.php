@@ -203,14 +203,45 @@ Route::get('/work/{slug}', function ($slug) {
 });
 
 Route::get('/case-studies', function () {
-    $caseStudies = \App\Models\CaseStudy::where('is_published', true)->orderBy('created_at', 'desc')->get();
+    $caseStudies = \App\Models\CaseStudy::with('categories')
+        ->where('is_published', true)
+        ->orderBy('created_at', 'desc')
+        ->get();
+    $categories = \App\Models\CaseStudyCategory::withCount(['caseStudies' => function ($query) {
+        $query->where('is_published', true);
+    }])->orderBy('name', 'asc')->get();
+    
     return Inertia::render('Portfolio/CaseStudies/Index', [
-        'caseStudies' => $caseStudies
+        'caseStudies' => $caseStudies,
+        'categories' => $categories
     ]);
 })->name('portfolio.case-studies.index');
 
+Route::get('/case-studies/category/{slug}', function ($slug) {
+    $category = \App\Models\CaseStudyCategory::where('slug', $slug)->firstOrFail();
+    $caseStudies = \App\Models\CaseStudy::with('categories')
+        ->whereHas('categories', function ($query) use ($category) {
+            $query->where('case_study_categories.id', $category->id);
+        })
+        ->where('is_published', true)
+        ->orderBy('created_at', 'desc')
+        ->get();
+    $categories = \App\Models\CaseStudyCategory::withCount(['caseStudies' => function ($query) {
+        $query->where('is_published', true);
+    }])->orderBy('name', 'asc')->get();
+
+    return Inertia::render('Portfolio/CaseStudies/Index', [
+        'caseStudies' => $caseStudies,
+        'categories' => $categories,
+        'activeCategory' => $category
+    ]);
+})->name('portfolio.case-studies.category');
+
 Route::get('/case-studies/{slug}', function ($slug) {
-    $caseStudy = \App\Models\CaseStudy::where('slug', $slug)->where('is_published', true)->firstOrFail();
+    $caseStudy = \App\Models\CaseStudy::with('categories')
+        ->where('slug', $slug)
+        ->where('is_published', true)
+        ->firstOrFail();
     return Inertia::render('Portfolio/CaseStudies/Show', [
         'caseStudy' => $caseStudy
     ]);
@@ -243,6 +274,15 @@ Route::middleware('auth')->group(function () {
         'edit' => 'admin.case-studies.edit',
         'update' => 'admin.case-studies.update',
         'destroy' => 'admin.case-studies.destroy',
+    ]);
+    Route::resource('admin/case-study-categories', \App\Http\Controllers\Admin\CaseStudyCategoryController::class)->names([
+        'index' => 'admin.case-study-categories.index',
+        'create' => 'admin.case-study-categories.create',
+        'store' => 'admin.case-study-categories.store',
+        'show' => 'admin.case-study-categories.show',
+        'edit' => 'admin.case-study-categories.edit',
+        'update' => 'admin.case-study-categories.update',
+        'destroy' => 'admin.case-study-categories.destroy',
     ]);
     Route::resource('admin/blogs', \App\Http\Controllers\Admin\BlogController::class)->names([
         'index' => 'admin.blogs.index',

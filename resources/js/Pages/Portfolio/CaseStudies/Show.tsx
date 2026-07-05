@@ -5,6 +5,12 @@ import { SEOHead } from '@/Components/SEOHead';
 import { PageContainer } from '@/Components/PageContainer';
 import { Footer } from '@/Components/Footer';
 
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+}
+
 interface CaseStudy {
   id: number;
   slug: string;
@@ -14,8 +20,10 @@ interface CaseStudy {
   summary: string;
   content: string;
   stack: string[];
+  tags?: string[];
   color: string;
   image_path?: string;
+  categories?: Category[];
 }
 
 const Show = ({ caseStudy }: { caseStudy: CaseStudy }) => {
@@ -58,7 +66,7 @@ const Show = ({ caseStudy }: { caseStudy: CaseStudy }) => {
         description={caseStudy.summary} 
         keywords={caseStudy.stack && Array.isArray(caseStudy.stack) ? caseStudy.stack.join(', ') : undefined} 
       />
-      <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-300">
+      <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-300 font-sans">
         <Navbar />
         <PageContainer className="max-w-4xl py-8">
           
@@ -78,15 +86,24 @@ const Show = ({ caseStudy }: { caseStudy: CaseStudy }) => {
           </h1>
 
           {/* Metadata Bar */}
-          <div className="flex flex-wrap items-center gap-4 mb-8 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+          <div className="flex flex-wrap items-center gap-3.5 mb-8 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
             {caseStudy.client && (
               <span className="bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-900/40">
                 Client: {caseStudy.client}
               </span>
             )}
-            <span className="bg-gray-150 dark:bg-gray-900 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full border border-gray-250 dark:border-gray-800">
+            <span className="bg-gray-100 dark:bg-gray-900 text-gray-750 dark:text-gray-300 px-3 py-1 rounded-full border border-gray-250 dark:border-gray-800">
               Year: {caseStudy.year}
             </span>
+            {caseStudy.categories && caseStudy.categories.map((cat) => (
+              <Link 
+                key={cat.id} 
+                href={`/case-studies/category/${cat.slug}`}
+                className="bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 px-3 py-1 rounded-full border border-purple-100 dark:border-purple-900/40 hover:bg-purple-100 dark:hover:bg-purple-900/60 transition-colors"
+              >
+                Category: {cat.name}
+              </Link>
+            ))}
           </div>
 
           {/* Cover Hero Image */}
@@ -119,16 +136,32 @@ const Show = ({ caseStudy }: { caseStudy: CaseStudy }) => {
             </div>
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Core Technologies</h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-4">
                 {caseStudy.stack && caseStudy.stack.map((tech) => (
                   <span
                     key={tech}
-                    className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200"
+                    className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-850 dark:text-gray-200"
                   >
                     {tech}
                   </span>
                 ))}
               </div>
+
+              {caseStudy.tags && caseStudy.tags.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Scope & Focus</h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {caseStudy.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-[#FA76FF]/10 border border-[#FA76FF]/35 text-[#FA76FF]"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

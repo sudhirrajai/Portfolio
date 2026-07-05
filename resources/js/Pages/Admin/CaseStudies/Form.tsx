@@ -16,6 +16,11 @@ import {
 import { toast } from 'sonner';
 import Modal from '@/Components/Modal';
 
+import { Table } from '@tiptap/extension-table';
+import { TableRow } from '@tiptap/extension-table-row';
+import { TableCell } from '@tiptap/extension-table-cell';
+import { TableHeader } from '@tiptap/extension-table-header';
+
 const TiptapEditor = ({ content, onChange }) => {
     const [isHtmlMode, setIsHtmlMode] = useState(false);
     const [htmlSource, setHtmlSource] = useState(content);
@@ -39,6 +44,27 @@ const TiptapEditor = ({ content, onChange }) => {
             ImageExtension.configure({
                 HTMLAttributes: {
                     class: 'rounded-xl shadow-md my-6 max-w-full border border-gray-200 dark:border-gray-800 mx-auto block hover:shadow-lg transition-all',
+                }
+            }),
+            Table.configure({
+                resizable: true,
+                HTMLAttributes: {
+                    class: 'border-collapse border border-gray-300 dark:border-gray-700 w-full my-6 text-sm',
+                }
+            }),
+            TableRow.configure({
+                HTMLAttributes: {
+                    class: 'border-b border-gray-200 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors',
+                }
+            }),
+            TableHeader.configure({
+                HTMLAttributes: {
+                    class: 'bg-gray-50 dark:bg-gray-900/50 font-bold px-4 py-3 border border-gray-300 dark:border-gray-750 text-left',
+                }
+            }),
+            TableCell.configure({
+                HTMLAttributes: {
+                    class: 'px-4 py-3 border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-355',
                 }
             })
         ],
@@ -442,7 +468,7 @@ const ensureArray = (val: any): any[] => {
     return [];
 };
 
-export default function Form({ auth, caseStudy }) {
+export default function Form({ auth, caseStudy, categories = [] }) {
     const isEditing = !!caseStudy;
 
     const { data, setData, post, processing, errors } = useForm({
@@ -452,9 +478,11 @@ export default function Form({ auth, caseStudy }) {
         summary: caseStudy?.summary || '',
         content: caseStudy?.content || '',
         stack: caseStudy?.stack ? ensureArray(caseStudy.stack).join(', ') : '',
+        tags: caseStudy?.tags ? ensureArray(caseStudy.tags).join(', ') : '',
         color: caseStudy?.color || '#6366f1',
         is_published: caseStudy ? !!caseStudy.is_published : true,
         image: null,
+        category_ids: caseStudy?.categories ? caseStudy.categories.map(c => c.id) : [],
     });
 
     const submit = (e) => {
@@ -464,6 +492,7 @@ export default function Form({ auth, caseStudy }) {
         const payload = {
             ...data,
             stack: data.stack.split(',').map(s => s.trim()).filter(s => s),
+            tags: data.tags.split(',').map(t => t.trim()).filter(t => t),
         };
 
         if (isEditing) {
@@ -653,7 +682,52 @@ export default function Form({ auth, caseStudy }) {
                         </div>
 
                         {/* Metadata Tag details */}
-                        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-sm space-y-4">
+                        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-sm space-y-5">
+                            {/* Categories Selection */}
+                            <div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <label className="block text-xs font-bold uppercase text-gray-400 dark:text-gray-500 tracking-wider">Categories</label>
+                                    <Link 
+                                        href={route('admin.case-study-categories.index')} 
+                                        className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
+                                    >
+                                        + Manage Categories
+                                    </Link>
+                                </div>
+                                {categories.length === 0 ? (
+                                    <p className="text-xs text-gray-400 dark:text-gray-650 italic">No categories created yet.</p>
+                                ) : (
+                                    <div className="space-y-2 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-850 rounded-xl p-3">
+                                        {categories.map((category) => {
+                                            const isChecked = data.category_ids.includes(category.id);
+                                            const handleCheckboxChange = () => {
+                                                if (isChecked) {
+                                                    setData('category_ids', data.category_ids.filter(id => id !== category.id));
+                                                } else {
+                                                    setData('category_ids', [...data.category_ids, category.id]);
+                                                }
+                                            };
+                                            return (
+                                                <label key={category.id} className="flex items-center gap-2.5 cursor-pointer select-none">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isChecked}
+                                                        onChange={handleCheckboxChange}
+                                                        className="rounded border-gray-300 dark:border-gray-700 text-indigo-600 focus:ring-indigo-500/20 dark:bg-gray-900 w-4 h-4"
+                                                    />
+                                                    <span className="text-sm text-gray-700 dark:text-gray-300 font-semibold">{category.name}</span>
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                                {errors.category_ids && (
+                                    <span className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                                        <AlertCircle className="w-3 h-3" /> {errors.category_ids}
+                                    </span>
+                                )}
+                            </div>
+
                             <div>
                                 <label className="block text-xs font-bold uppercase text-gray-400 dark:text-gray-500 tracking-wider mb-1.5">Tech Stack (comma separated)</label>
                                 <input
@@ -667,6 +741,22 @@ export default function Form({ auth, caseStudy }) {
                                 {errors.stack && (
                                     <span className="text-xs text-red-500 mt-1 flex items-center gap-1">
                                         <AlertCircle className="w-3 h-3" /> {errors.stack}
+                                    </span>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold uppercase text-gray-400 dark:text-gray-500 tracking-wider mb-1.5">Tags (comma separated)</label>
+                                <input
+                                    type="text"
+                                    value={data.tags}
+                                    onChange={(e) => setData('tags', e.target.value)}
+                                    placeholder="e.g. Enterprise, Freelance, API Integration"
+                                    className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                                />
+                                {errors.tags && (
+                                    <span className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                                        <AlertCircle className="w-3 h-3" /> {errors.tags}
                                     </span>
                                 )}
                             </div>

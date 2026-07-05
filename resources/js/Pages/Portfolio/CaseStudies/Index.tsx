@@ -6,6 +6,13 @@ import { SEOHead } from '@/Components/SEOHead';
 import { PageContainer } from '@/Components/PageContainer';
 import { Footer } from '@/Components/Footer';
 
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  case_studies_count?: number;
+}
+
 interface CaseStudy {
   id: number;
   slug: string;
@@ -14,8 +21,10 @@ interface CaseStudy {
   client?: string;
   year: string;
   stack: string[];
+  tags?: string[];
   color: string;
   image_path?: string;
+  categories?: Category[];
 }
 
 const CaseStudyCard = ({ study }: { study: CaseStudy }) => (
@@ -64,10 +73,19 @@ const CaseStudyCard = ({ study }: { study: CaseStudy }) => (
     </div>
 
     <div className="p-5 flex flex-col flex-1">
-      <p className="text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mb-2">
+      {study.categories && study.categories.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-2.5">
+          {study.categories.map(cat => (
+            <span key={cat.id} className="text-[9px] font-extrabold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/30 px-2 py-0.5 rounded">
+              {cat.name}
+            </span>
+          ))}
+        </div>
+      )}
+      <p className="text-xs text-gray-400 dark:text-gray-505 font-bold uppercase tracking-wider mb-2">
         {study.stack && study.stack.slice(0, 3).join(' • ')}
       </p>
-      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex-1 leading-relaxed">{study.summary}</p>
+      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex-1 leading-relaxed line-clamp-3">{study.summary}</p>
       <div className="mt-4 flex items-center text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1.5 transition-transform duration-300">
         Read Case Study →
       </div>
@@ -75,7 +93,7 @@ const CaseStudyCard = ({ study }: { study: CaseStudy }) => (
   </Link>
 );
 
-const Index = ({ caseStudies }: { caseStudies: CaseStudy[] }) => {
+const Index = ({ caseStudies, categories = [], activeCategory = null }: { caseStudies: CaseStudy[]; categories: Category[]; activeCategory: Category | null }) => {
   const INITIAL_COUNT = 6;
   const LOAD_MORE_STEP = 6;
   const [visibleCount, setVisibleCount] = React.useState(INITIAL_COUNT);
@@ -91,24 +109,56 @@ const Index = ({ caseStudies }: { caseStudies: CaseStudy[] }) => {
   return (
     <>
       <SEOHead 
-        title="Case Studies | Portfolio" 
+        title={activeCategory ? `${activeCategory.name} Case Studies | Portfolio` : "Case Studies | Portfolio"} 
         description="Deep dives into my commercial products, freelance works, custom integrations, and system architectures." 
       />
       <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-300">
         <Navbar />
         <PageContainer>
-          <div className="mb-12 md:mb-16">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium leading-tight mb-6 tracking-[-2px]">
-              Case Studies.
+          <div className="mb-8 md:mb-12">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium leading-tight mb-4 tracking-[-2px]">
+              Case Studies{activeCategory ? `: ${activeCategory.name}` : '.'}
             </h1>
             <p className="text-base md:text-lg max-w-2xl leading-relaxed text-gray-600 dark:text-gray-400">
               Deep dives and architectural breakdowns of real-world freelance contracts, production platforms, and client solutions.
             </p>
           </div>
 
+          {/* Categories Horizontal Selector tabs */}
+          {categories.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-10 border-b border-black/10 dark:border-white/10 pb-6">
+              <Link
+                href="/case-studies"
+                className={`px-4 py-2 border text-[11px] font-bold uppercase tracking-wider rounded-full transition-all duration-200 ${
+                  !activeCategory
+                    ? 'bg-black text-white dark:bg-white dark:text-black border-black dark:border-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] translate-y-[-1px]'
+                    : 'bg-transparent text-gray-500 dark:text-gray-400 border-gray-250 dark:border-gray-800 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white'
+                }`}
+              >
+                All Works
+              </Link>
+              {categories.map((category) => {
+                const isActive = activeCategory?.id === category.id;
+                return (
+                  <Link
+                    key={category.id}
+                    href={`/case-studies/category/${category.slug}`}
+                    className={`px-4 py-2 border text-[11px] font-bold uppercase tracking-wider rounded-full transition-all duration-200 ${
+                      isActive
+                        ? 'bg-black text-white dark:bg-white dark:text-black border-black dark:border-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] translate-y-[-1px]'
+                        : 'bg-transparent text-gray-500 dark:text-gray-400 border-gray-250 dark:border-gray-800 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white'
+                    }`}
+                  >
+                    {category.name} ({category.case_studies_count ?? 0})
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+
           {allStudies.length === 0 ? (
             <div className="py-24 text-center border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl">
-              <p className="text-gray-500 dark:text-gray-400 italic">No case studies have been published yet. Please check back later!</p>
+              <p className="text-gray-500 dark:text-gray-400 italic">No case studies found in this category. Check back soon!</p>
             </div>
           ) : (
             <>
