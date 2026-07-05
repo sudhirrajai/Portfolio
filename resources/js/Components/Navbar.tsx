@@ -24,6 +24,7 @@ export const Navbar: React.FC = () => {
   const desktopLinks = [
     { href: '/', label: 'HOME' },
     { href: '/work', label: 'WORK' },
+    { href: '/case-studies', label: 'CASE STUDIES' },
     { href: '/open-labs', label: 'OPEN LABS' },
     { href: '/blog', label: 'BLOG' },
   ];
@@ -32,6 +33,7 @@ export const Navbar: React.FC = () => {
   const mobileLinks = [
     { href: '/', label: 'HOME' },
     { href: '/work', label: 'WORK' },
+    { href: '/case-studies', label: 'CASE STUDIES' },
     { href: '/open-labs', label: 'OPEN LABS' },
     { href: '/blog', label: 'BLOG' },
     { href: '/about', label: 'ABOUT ME' },

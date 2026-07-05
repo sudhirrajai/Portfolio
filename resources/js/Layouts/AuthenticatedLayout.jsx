@@ -20,6 +20,7 @@ export default function AuthenticatedLayout({ header, children }) {
     const navItems = [
         { label: 'Dashboard', route: 'dashboard', pattern: 'dashboard', icon: LayoutDashboard },
         { label: 'Projects', route: 'admin.projects.index', pattern: 'admin.projects.*', icon: Briefcase },
+        { label: 'Case Studies', route: 'admin.case-studies.index', pattern: 'admin.case-studies.*', icon: Briefcase },
         { label: 'Roadmap', route: 'admin.roadmaps.index', pattern: 'admin.roadmaps.*', icon: Milestone },
         { label: 'Blog Posts', route: 'admin.blogs.index', pattern: 'admin.blogs.*', icon: FileText },
         { label: 'Blog Categories', route: 'admin.categories.index', pattern: 'admin.categories.*', icon: Tag },

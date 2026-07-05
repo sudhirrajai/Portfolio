@@ -12,7 +12,7 @@
             <meta name="google-site-verification" content="{{ $globalSeo->google_search_console_id }}" />
         @endif
 
-        @if(!empty($globalSeo?->google_analytics_id))
+        @if(!empty($globalSeo?->google_analytics_id) && !request()->hasCookie('skip_analytics') && !auth()->check())
             <!-- Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id={{ $globalSeo->google_analytics_id }}"></script>
             <script>

@@ -18,6 +18,9 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Exclude admin from traffic tracking on this browser for 5 years
+        cookie()->queue('skip_analytics', '1', 60 * 24 * 365 * 5);
+
         // 1. Extra helpful counts
         $projectCount = Project::count();
         $blogCount = BlogPost::count();

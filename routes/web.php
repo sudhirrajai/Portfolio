@@ -202,6 +202,20 @@ Route::get('/work/{slug}', function ($slug) {
     return Inertia::render('Portfolio/ProjectDetail', ['project' => $project]);
 });
 
+Route::get('/case-studies', function () {
+    $caseStudies = \App\Models\CaseStudy::where('is_published', true)->orderBy('created_at', 'desc')->get();
+    return Inertia::render('Portfolio/CaseStudies/Index', [
+        'caseStudies' => $caseStudies
+    ]);
+})->name('portfolio.case-studies.index');
+
+Route::get('/case-studies/{slug}', function ($slug) {
+    $caseStudy = \App\Models\CaseStudy::where('slug', $slug)->where('is_published', true)->firstOrFail();
+    return Inertia::render('Portfolio/CaseStudies/Show', [
+        'caseStudy' => $caseStudy
+    ]);
+})->name('portfolio.case-studies.show');
+
 Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -219,6 +233,16 @@ Route::middleware('auth')->group(function () {
         'edit' => 'admin.projects.edit',
         'update' => 'admin.projects.update',
         'destroy' => 'admin.projects.destroy',
+    ]);
+
+    Route::resource('admin/case-studies', \App\Http\Controllers\Admin\CaseStudyController::class)->names([
+        'index' => 'admin.case-studies.index',
+        'create' => 'admin.case-studies.create',
+        'store' => 'admin.case-studies.store',
+        'show' => 'admin.case-studies.show',
+        'edit' => 'admin.case-studies.edit',
+        'update' => 'admin.case-studies.update',
+        'destroy' => 'admin.case-studies.destroy',
     ]);
     Route::resource('admin/blogs', \App\Http\Controllers\Admin\BlogController::class)->names([
         'index' => 'admin.blogs.index',

@@ -25,8 +25,16 @@ class TrackVisitor
 
     protected function recordVisit(Request $request)
     {
-        // Prevent logging your own visits when logged into the admin dashboard
-        if (auth()->check()) {
+        // Prevent logging your own visits when logged into the admin dashboard or using skip_analytics cookie
+        if (auth()->check() || $request->hasCookie('skip_analytics')) {
+            return;
+        }
+
+        // Exclude specific IP addresses (configured in .env)
+        $excludedIps = explode(',', env('EXCLUDED_IPS', ''));
+        $excludedIps[] = '127.0.0.1';
+        $excludedIps[] = '::1';
+        if (in_array($request->ip(), array_filter(array_map('trim', $excludedIps)))) {
             return;
         }
 
