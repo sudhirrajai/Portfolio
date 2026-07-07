@@ -123,7 +123,7 @@ const Home = ({ projects, blogPosts, caseStudies = [], profile, experience = [],
               Portfolio Showroom
             </div>
             <h2 className="text-3xl md:text-5xl font-medium tracking-tight text-black dark:text-white">
-              Selected Works & Case Studies
+              Selected Works
             </h2>
           </div>
 

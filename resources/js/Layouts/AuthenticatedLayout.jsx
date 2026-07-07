@@ -2,7 +2,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import Dropdown from '@/Components/Dropdown';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { LayoutDashboard, Briefcase, FileText, GraduationCap, Wrench, User, Settings, LogOut, MessageSquare, Settings2, Globe, Calendar, Mail, Milestone, Tag, FolderOpen } from 'lucide-react';
+import { LayoutDashboard, Briefcase, FileText, GraduationCap, Wrench, User, Settings, LogOut, MessageSquare, Settings2, Globe, Calendar, Mail, Milestone, Tag, FolderOpen, ChevronDown, ChevronRight } from 'lucide-react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
@@ -10,33 +10,78 @@ export default function AuthenticatedLayout({ header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
+    const [openMenus, setOpenMenus] = useState({});
+
     const isActive = (routeName) => {
-        if (routeName.endsWith('*')) {
-            return route().current(routeName);
-        }
         return route().current(routeName);
     };
 
-    const navItems = [
-        { label: 'Dashboard', route: 'dashboard', pattern: 'dashboard', icon: LayoutDashboard },
-        { label: 'Projects', route: 'admin.projects.index', pattern: 'admin.projects.*', icon: Briefcase },
-        { label: 'Case Studies', route: 'admin.case-studies.index', pattern: 'admin.case-studies.*', icon: Briefcase },
-        { label: 'Case Study Categories', route: 'admin.case-study-categories.index', pattern: 'admin.case-study-categories.*', icon: Tag },
-        { label: 'Roadmap', route: 'admin.roadmaps.index', pattern: 'admin.roadmaps.*', icon: Milestone },
-        { label: 'Blog Posts', route: 'admin.blogs.index', pattern: 'admin.blogs.*', icon: FileText },
-        { label: 'Blog Categories', route: 'admin.categories.index', pattern: 'admin.categories.*', icon: Tag },
-        { label: 'Experience', route: 'admin.experiences.index', pattern: 'admin.experiences.*', icon: Briefcase },
-        { label: 'Education', route: 'admin.educations.index', pattern: 'admin.educations.*', icon: GraduationCap },
-        { label: 'Skills', route: 'admin.skills.index', pattern: 'admin.skills.*', icon: Wrench },
-        { label: 'Messages', route: 'admin.messages.index', pattern: 'admin.messages.*', icon: MessageSquare },
-        { label: 'Comments', route: 'admin.comments.index', pattern: 'admin.comments.*', icon: MessageSquare },
-        { label: 'Bookings & Calendar', route: 'admin.bookings.index', pattern: 'admin.bookings.*', icon: Calendar },
-        { label: 'CMS / Profile Info', route: 'admin.profile.edit', pattern: 'admin.profile.*', icon: Settings2 },
-        { label: 'SEO Settings', route: 'admin.seo.index', pattern: 'admin.seo.*', icon: Globe },
-        { label: 'Mail & SMTP Server', route: 'admin.mail.index', pattern: 'admin.mail.*', icon: Mail },
-        { label: 'File Manager', route: 'admin.files.index', pattern: 'admin.files.*', icon: FolderOpen },
-    ];
+    const toggleGroup = (key, hasActiveChild) => {
+        setOpenMenus(prev => ({
+            ...prev,
+            [key]: !(prev[key] ?? hasActiveChild)
+        }));
+    };
 
+    const menuGroups = [
+        {
+            label: null,
+            items: [
+                { label: 'Dashboard', route: 'dashboard', pattern: 'dashboard', icon: LayoutDashboard }
+            ]
+        },
+        {
+            label: 'Portfolio',
+            icon: Briefcase,
+            key: 'portfolio',
+            items: [
+                { label: 'Projects', route: 'admin.projects.index', pattern: 'admin.projects.*', icon: Briefcase },
+                { label: 'Case Studies', route: 'admin.case-studies.index', pattern: 'admin.case-studies.*', icon: Briefcase },
+                { label: 'Case Study Categories', route: 'admin.case-study-categories.index', pattern: 'admin.case-study-categories.*', icon: Tag },
+                { label: 'Roadmap', route: 'admin.roadmaps.index', pattern: 'admin.roadmaps.*', icon: Milestone },
+                { label: 'File Manager', route: 'admin.files.index', pattern: 'admin.files.*', icon: FolderOpen },
+            ]
+        },
+        {
+            label: 'Professional Info',
+            icon: GraduationCap,
+            key: 'professional',
+            items: [
+                { label: 'Experience', route: 'admin.experiences.index', pattern: 'admin.experiences.*', icon: Briefcase },
+                { label: 'Education', route: 'admin.educations.index', pattern: 'admin.educations.*', icon: GraduationCap },
+                { label: 'Skills', route: 'admin.skills.index', pattern: 'admin.skills.*', icon: Wrench },
+            ]
+        },
+        {
+            label: 'Blog Manager',
+            icon: FileText,
+            key: 'blog',
+            items: [
+                { label: 'Blog Posts', route: 'admin.blogs.index', pattern: 'admin.blogs.*', icon: FileText },
+                { label: 'Blog Categories', route: 'admin.categories.index', pattern: 'admin.categories.*', icon: Tag },
+                { label: 'Comments', route: 'admin.comments.index', pattern: 'admin.comments.*', icon: MessageSquare },
+            ]
+        },
+        {
+            label: 'Communications',
+            icon: MessageSquare,
+            key: 'communications',
+            items: [
+                { label: 'Messages', route: 'admin.messages.index', pattern: 'admin.messages.*', icon: MessageSquare },
+                { label: 'Bookings & Calendar', route: 'admin.bookings.index', pattern: 'admin.bookings.*', icon: Calendar },
+            ]
+        },
+        {
+            label: 'Settings',
+            icon: Settings,
+            key: 'settings',
+            items: [
+                { label: 'CMS / Profile Info', route: 'admin.profile.edit', pattern: 'admin.profile.*', icon: Settings2 },
+                { label: 'SEO Settings', route: 'admin.seo.index', pattern: 'admin.seo.*', icon: Globe },
+                { label: 'Mail & SMTP Server', route: 'admin.mail.index', pattern: 'admin.mail.*', icon: Mail },
+            ]
+        }
+    ];
 
     return (
         <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans selection:bg-indigo-500 selection:text-white">
@@ -53,28 +98,74 @@ export default function AuthenticatedLayout({ header, children }) {
                     </Link>
                 </div>
 
-                <nav className="flex-1 py-6 px-4 overflow-y-auto space-y-1.5">
+                <nav className="flex-1 py-6 px-4 overflow-y-auto space-y-2">
                     <div className="px-4 mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
                         Overview
                     </div>
-                    {navItems.map((item) => {
-                        const active = isActive(item.pattern);
-                        const Icon = item.icon;
+                    {menuGroups.map((group, gIdx) => {
+                        if (!group.key) {
+                            return group.items.map((item) => {
+                                const active = isActive(item.pattern);
+                                const Icon = item.icon;
+                                return (
+                                    <Link
+                                        key={item.label}
+                                        href={route(item.route)}
+                                        className={`flex items-center gap-3.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group ${
+                                            active
+                                                ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400'
+                                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200'
+                                        }`}
+                                    >
+                                        <Icon className={`w-[18px] h-[18px] transition-colors duration-200 ${
+                                            active ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'
+                                        }`} />
+                                        {item.label}
+                                    </Link>
+                                );
+                            });
+                        }
+
+                        const GroupIcon = group.icon;
+                        const hasActiveChild = group.items.some(item => isActive(item.pattern));
+                        const isOpen = openMenus[group.key] ?? hasActiveChild;
+
                         return (
-                            <Link
-                                key={item.label}
-                                href={route(item.route)}
-                                className={`flex items-center gap-3.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group ${
-                                    active
-                                        ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400'
-                                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200'
-                                }`}
-                            >
-                                <Icon className={`w-[18px] h-[18px] transition-colors duration-200 ${
-                                    active ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'
-                                }`} />
-                                {item.label}
-                            </Link>
+                            <div key={group.key} className="space-y-1">
+                                <button
+                                    onClick={() => toggleGroup(group.key, hasActiveChild)}
+                                    className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200`}
+                                >
+                                    <div className="flex items-center gap-3.5">
+                                        <GroupIcon className="w-[18px] h-[18px] text-gray-400 group-hover:text-gray-500" />
+                                        <span>{group.label}</span>
+                                    </div>
+                                    {isOpen ? <ChevronDown className="w-4 h-4 text-gray-400" /> : <ChevronRight className="w-4 h-4 text-gray-400" />}
+                                </button>
+                                
+                                {isOpen && (
+                                    <div className="pl-4 border-l border-gray-100 dark:border-gray-800/80 ml-[25px] space-y-1 mt-1 transition-all duration-200">
+                                        {group.items.map((item) => {
+                                            const active = isActive(item.pattern);
+                                            const ItemIcon = item.icon;
+                                            return (
+                                                <Link
+                                                    key={item.label}
+                                                    href={route(item.route)}
+                                                    className={`flex items-center gap-3 px-3.5 py-2 text-xs font-medium rounded-lg transition-all duration-200 ${
+                                                        active
+                                                            ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-semibold'
+                                                            : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/60 hover:text-gray-800 dark:hover:text-gray-200'
+                                                    }`}
+                                                >
+                                                    <ItemIcon className={`w-3.5 h-3.5 ${active ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400'}`} />
+                                                    {item.label}
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
                         );
                     })}
                 </nav>
@@ -128,19 +219,59 @@ export default function AuthenticatedLayout({ header, children }) {
 
                 {/* Mobile Menu */}
                 <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700'}>
-                    <div className="space-y-1 pb-3 pt-2">
-                        {navItems.map((item) => (
-                            <ResponsiveNavLink
-                                key={item.label}
-                                href={route(item.route)}
-                                active={isActive(item.pattern)}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <item.icon className="w-5 h-5" />
-                                    {item.label}
+                    <div className="space-y-1.5 pb-4 pt-3 px-3 max-h-[calc(100vh-4rem)] overflow-y-auto">
+                        {menuGroups.map((group) => {
+                            if (!group.key) {
+                                return group.items.map((item) => (
+                                    <ResponsiveNavLink
+                                        key={item.label}
+                                        href={route(item.route)}
+                                        active={isActive(item.pattern)}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <item.icon className="w-5 h-5" />
+                                            {item.label}
+                                        </div>
+                                    </ResponsiveNavLink>
+                                ));
+                            }
+
+                            const GroupIcon = group.icon;
+                            const hasActiveChild = group.items.some(item => isActive(item.pattern));
+                            const isOpen = openMenus[group.key] ?? hasActiveChild;
+
+                            return (
+                                <div key={group.key} className="space-y-1">
+                                    <button
+                                        onClick={() => toggleGroup(group.key, hasActiveChild)}
+                                        className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <GroupIcon className="w-5 h-5 text-gray-400 animate-none" />
+                                            <span>{group.label}</span>
+                                        </div>
+                                        {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                                    </button>
+
+                                    {isOpen && (
+                                        <div className="pl-4 border-l border-gray-100 dark:border-gray-700 ml-6 space-y-1 mt-1">
+                                            {group.items.map((item) => (
+                                                <ResponsiveNavLink
+                                                    key={item.label}
+                                                    href={route(item.route)}
+                                                    active={isActive(item.pattern)}
+                                                >
+                                                    <div className="flex items-center gap-3 text-xs">
+                                                        <item.icon className="w-4 h-4" />
+                                                        {item.label}
+                                                    </div>
+                                                </ResponsiveNavLink>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
-                            </ResponsiveNavLink>
-                        ))}
+                            );
+                        })}
                     </div>
                     <div className="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">
                         <div className="px-4">
