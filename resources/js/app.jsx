@@ -11,10 +11,17 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 router.on('navigate', (event) => {
     if (window.gtag && window.GA_MEASUREMENT_ID) {
-        window.gtag('config', window.GA_MEASUREMENT_ID, {
-            page_path: event.detail.page.url,
-            page_title: document.title,
-        });
+        const url = event.detail.page.url;
+        const cleanPath = (url.startsWith('/') ? url : '/' + url).split('?')[0];
+        const ignoredPrefixes = ['/admin', '/login', '/dashboard', '/register', '/api', '/sanctum'];
+        const isIgnored = ignoredPrefixes.some(prefix => cleanPath === prefix || cleanPath.startsWith(prefix + '/'));
+
+        if (!isIgnored) {
+            window.gtag('config', window.GA_MEASUREMENT_ID, {
+                page_path: event.detail.page.url,
+                page_title: document.title,
+            });
+        }
     }
 });
 

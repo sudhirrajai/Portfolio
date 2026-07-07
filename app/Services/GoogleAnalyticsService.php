@@ -179,15 +179,34 @@ class GoogleAnalyticsService
                 'metrics' => [
                     new Metric(['name' => 'screenPageViews']),
                 ],
-                'limit' => 5,
+                'limit' => 50,
             ]));
 
             $pages = [];
             foreach ($response->getRows() as $row) {
+                $path = $row->getDimensionValues()[0]->getValue();
+
+                // Skip administrative, auth, and API paths from showing up in reporting
+                $ignored = false;
+                foreach (['/admin', '/login', '/dashboard', '/register', '/api', '/sanctum'] as $prefix) {
+                    if ($path === $prefix || str_starts_with($path, $prefix . '/')) {
+                        $ignored = true;
+                        break;
+                    }
+                }
+
+                if ($ignored) {
+                    continue;
+                }
+
                 $pages[] = [
-                    'url_path' => $row->getDimensionValues()[0]->getValue(),
+                    'url_path' => $path,
                     'total_views' => (int)$row->getMetricValues()[0]->getValue(),
                 ];
+
+                if (count($pages) >= 5) {
+                    break;
+                }
             }
             return $pages;
         } catch (Exception $e) {
