@@ -22,6 +22,7 @@ class SitemapController extends Controller
             ['loc' => url('/open-labs'), 'lastmod' => $now, 'changefreq' => 'weekly', 'priority' => '0.7'],
             ['loc' => url('/roadmap'), 'lastmod' => $now, 'changefreq' => 'weekly', 'priority' => '0.7'],
             ['loc' => url('/blog'), 'lastmod' => $now, 'changefreq' => 'daily', 'priority' => '0.8'],
+            ['loc' => url('/case-studies'), 'lastmod' => $now, 'changefreq' => 'daily', 'priority' => '0.8'],
             ['loc' => url('/contact'), 'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.7'],
         ];
 
@@ -52,6 +53,28 @@ class SitemapController extends Controller
         foreach ($categories as $category) {
             $urls[] = [
                 'loc' => url("/blog/category/{$category->slug}"),
+                'lastmod' => $category->updated_at->toAtomString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.6'
+            ];
+        }
+
+        // 5. Dynamic Case Studies
+        $caseStudies = \App\Models\CaseStudy::where('is_published', true)->orderBy('created_at', 'desc')->get();
+        foreach ($caseStudies as $case) {
+            $urls[] = [
+                'loc' => url("/case-studies/{$case->slug}"),
+                'lastmod' => $case->updated_at->toAtomString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.8'
+            ];
+        }
+
+        // 6. Dynamic Case Study Categories
+        $caseCategories = \App\Models\CaseStudyCategory::all();
+        foreach ($caseCategories as $category) {
+            $urls[] = [
+                'loc' => url("/case-studies/category/{$category->slug}"),
                 'lastmod' => $category->updated_at->toAtomString(),
                 'changefreq' => 'weekly',
                 'priority' => '0.6'

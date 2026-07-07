@@ -9,7 +9,7 @@ import { ArrowDown } from 'lucide-react';
 import { Timeline } from '@/Components/Timeline';
 import { DevTerminal } from '@/Components/DevTerminal';
 
-const Home = ({ projects, blogPosts, profile, experience = [], education = [] }) => {
+const Home = ({ projects, blogPosts, caseStudies = [], profile, experience = [], education = [] }) => {
   const scrollToWork = () => {
     document.getElementById('work-section')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -164,6 +164,76 @@ const Home = ({ projects, blogPosts, profile, experience = [], education = [] })
           </Link>
         </motion.div>
       </section>
+
+      {/* Case Studies Showcase Section */}
+      {caseStudies && caseStudies.length > 0 && (
+        <>
+          {/* Visual Divider Ribbon */}
+          <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <hr className="border-t pf-border opacity-60" />
+          </div>
+
+          <section className="px-4 md:px-8 py-20 md:py-24 max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+              <div>
+                <div className="inline-block px-3 py-1 bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 text-purple-600 dark:text-purple-400 text-[10px] uppercase font-bold tracking-wider mb-3 rounded-sm">
+                  Deep Dives
+                </div>
+                <h2 className="text-3xl md:text-5xl font-medium tracking-tight text-black dark:text-white">
+                  Case Studies & Problem Solving
+                </h2>
+              </div>
+              <Link 
+                href="/case-studies"
+                className="inline-flex items-center gap-1.5 text-[11px] uppercase font-bold tracking-wider text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-[#FA76FF] transition-colors pb-1 border-b-2 border-transparent hover:border-current"
+              >
+                All Case Studies →
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+              {caseStudies.map((caseStudy, idx) => (
+                <motion.div
+                  key={caseStudy.id}
+                  initial={{ y: 40, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1, duration: 0.5 }}
+                  className="h-full"
+                >
+                  <Link 
+                    href={`/case-studies/${caseStudy.slug}`}
+                    className="group flex flex-col h-full border-2 border-black dark:border-white bg-white dark:bg-zinc-900/40 p-6 hover:bg-[#ff6bff]/5 dark:hover:bg-[#ff6bff]/10 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] transition-all duration-300 relative overflow-hidden"
+                  >
+                    <div className="absolute -inset-y-0 -right-full w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[25deg] group-hover:animate-shine pointer-events-none" />
+                    
+                    {/* Categories */}
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {(caseStudy.categories || []).map((cat) => (
+                        <span key={cat.id} className="text-[9px] font-bold uppercase text-purple-600 dark:text-[#ff6bff]">
+                          {cat.name}
+                        </span>
+                      ))}
+                    </div>
+
+                    <h3 className="text-xl md:text-lg lg:text-xl font-semibold leading-tight mb-3 group-hover:text-purple-600 dark:hover:text-[#FA76FF] transition-colors duration-200">
+                      {caseStudy.title}
+                    </h3>
+
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-6 flex-1 leading-relaxed">
+                      {caseStudy.summary}
+                    </p>
+
+                    <div className="text-[11px] uppercase font-bold tracking-wider text-black dark:text-white mt-auto group-hover:translate-x-1 transition-transform duration-200">
+                      Read Case Study →
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
 
       {/* Dev Terminal Git Stats Section */}
       <DevTerminal profile={profile} />

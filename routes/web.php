@@ -20,6 +20,13 @@ Route::get('/', function () {
 
     // 2. Pull 3 random articles to fill layout emptiness
     $blogPosts = \App\Models\BlogPost::inRandomOrder()->take(3)->get();
+
+    // 3. Pull 3 latest published case studies
+    $caseStudies = \App\Models\CaseStudy::with('categories')
+        ->where('is_published', true)
+        ->latest()
+        ->take(3)
+        ->get();
     
     $profile = \App\Models\Profile::first();
     $experience = \App\Models\Experience::orderBy('created_at', 'desc')->get();
@@ -28,6 +35,7 @@ Route::get('/', function () {
     return Inertia::render('Portfolio/Home', [
         'projects' => $projects,
         'blogPosts' => $blogPosts,
+        'caseStudies' => $caseStudies,
         'profile' => $profile,
         'experience' => $experience,
         'education' => $education
