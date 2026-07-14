@@ -20,5 +20,12 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->respond(function (\Symfony\Component\HttpFoundation\Response $response, \Throwable $exception, \Illuminate\Http\Request $request) {
+            if ($response->getStatusCode() === 404 && !$request->expectsJson()) {
+                return \Inertia\Inertia::render('Portfolio/NotFound')
+                    ->toResponse($request)
+                    ->setStatusCode(404);
+            }
+            return $response;
+        });
     })->create();
