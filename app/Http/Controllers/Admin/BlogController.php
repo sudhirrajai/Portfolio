@@ -42,7 +42,7 @@ class BlogController extends Controller
             'excerpt' => 'required|string',
             'content' => 'required|string',
             'tags' => 'required|array',
-            'image' => 'nullable|image|max:3072',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp|max:3072',
         ]);
 
         if ($request->hasFile('image')) {
@@ -83,7 +83,7 @@ class BlogController extends Controller
             'excerpt' => 'required|string',
             'content' => 'required|string',
             'tags' => 'required|array',
-            'image' => 'nullable|image|max:3072',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp|max:3072',
         ]);
 
         if ($request->hasFile('image')) {

@@ -618,7 +618,7 @@ export default function Form({ auth, blog, categories = [] }) {
                             <div className="relative bg-gray-50 dark:bg-gray-950 border border-dashed border-gray-300 dark:border-gray-800 hover:border-indigo-500 p-4 rounded-xl text-center transition-colors">
                                 <input
                                     type="file"
-                                    accept="image/*"
+                                    accept="image/*,.svg"
                                     onChange={(e) => setData('image', e.target.files[0])}
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                 />
@@ -627,7 +627,7 @@ export default function Form({ auth, blog, categories = [] }) {
                                     <span className="mt-2 block text-xs font-bold text-gray-600 dark:text-gray-400">
                                         {data.image ? data.image.name : 'Upload new banner'}
                                     </span>
-                                    <span className="mt-0.5 text-[10px] text-gray-400 block">Max: 3MB (JPG, PNG, WEBP)</span>
+                                    <span className="mt-0.5 text-[10px] text-gray-400 block">Max: 3MB (JPG, PNG, WEBP, SVG)</span>
                                 </div>
                             </div>
                             {errors.image && (
