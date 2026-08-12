@@ -59,12 +59,41 @@ const Show = ({ caseStudy }: { caseStudy: CaseStudy }) => {
     }
   };
 
+  const caseStudySchema = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    'headline': caseStudy.title,
+    'description': caseStudy.summary,
+    'dependencies': caseStudy.stack && Array.isArray(caseStudy.stack) ? caseStudy.stack.join(', ') : '',
+    'proficiencyLevel': 'Expert',
+    'author': {
+      '@type': 'Person',
+      'name': 'Sudhir Rajai',
+    },
+    'publisher': {
+      '@type': 'Organization',
+      'name': caseStudy.client || 'Portfolio',
+    }
+  };
+
+  const breadcrumbsSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': typeof window !== 'undefined' ? window.location.origin : '/' },
+      { '@type': 'ListItem', 'position': 2, 'name': 'Case Studies', 'item': typeof window !== 'undefined' ? `${window.location.origin}/case-studies` : '/case-studies' },
+      { '@type': 'ListItem', 'position': 3, 'name': caseStudy.title, 'item': typeof window !== 'undefined' ? window.location.href : '' }
+    ]
+  };
+
   return (
     <>
       <SEOHead 
         title={`${caseStudy.title} | Case Study`} 
         description={caseStudy.summary} 
         keywords={caseStudy.stack && Array.isArray(caseStudy.stack) ? caseStudy.stack.join(', ') : undefined} 
+        type="article"
+        schemaData={[caseStudySchema, breadcrumbsSchema]}
       />
       <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-300 font-sans">
         <Navbar />

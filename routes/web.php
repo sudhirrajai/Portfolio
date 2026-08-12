@@ -389,7 +389,12 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'sitemap']);
 Route::get('/robots.txt', [\App\Http\Controllers\SitemapController::class, 'robots']);
+Route::get('/llms.txt', [\App\Http\Controllers\LlmTxtController::class, 'index'])->name('llms.txt');
+Route::get('/llms-full.txt', [\App\Http\Controllers\LlmTxtController::class, 'full'])->name('llms-full.txt');
+Route::get('/feed.xml', [\App\Http\Controllers\FeedController::class, 'index'])->name('feed.xml');
+Route::get('/rss.xml', [\App\Http\Controllers\FeedController::class, 'index']);
 Route::get('/files/preview/{id}', [\App\Http\Controllers\PublicFileController::class, 'preview'])->name('files.preview');
 Route::get('/files/download/{id}', [\App\Http\Controllers\PublicFileController::class, 'download'])->name('files.download');
 
 require __DIR__.'/auth.php';
+

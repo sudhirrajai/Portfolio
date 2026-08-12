@@ -102,12 +102,40 @@ const ProjectDetail = ({ project }) => {
     );
   }
 
+  const softwareSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    'name': project.title,
+    'description': project.summary,
+    'applicationCategory': 'DeveloperApplication',
+    'operatingSystem': 'Web',
+    'author': {
+      '@type': 'Person',
+      'name': 'Sudhir Rajai',
+    },
+    'softwareRequirements': project.stack && Array.isArray(project.stack) ? project.stack.join(', ') : '',
+    'url': typeof window !== 'undefined' ? window.location.href : '',
+    ...(project.github_url ? { 'codeRepository': project.github_url } : {})
+  };
+
+  const breadcrumbsSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': typeof window !== 'undefined' ? window.location.origin : '/' },
+      { '@type': 'ListItem', 'position': 2, 'name': 'Work', 'item': typeof window !== 'undefined' ? `${window.location.origin}/work` : '/work' },
+      { '@type': 'ListItem', 'position': 3, 'name': project.title, 'item': typeof window !== 'undefined' ? window.location.href : '' }
+    ]
+  };
+
   return (
     <>
       <SEOHead 
         title={project.title} 
         description={project.summary} 
-        keywords={project.stack && Array.isArray(project.stack) ? project.stack.join(', ') : undefined} 
+        keywords={project.stack && Array.isArray(project.stack) ? project.stack.join(', ') : undefined}
+        type="software"
+        schemaData={[softwareSchema, breadcrumbsSchema]}
       />
       <Navbar />
 

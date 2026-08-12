@@ -34,6 +34,8 @@
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
         <link rel="icon" type="image/png" href="/favicon.png" />
         <link rel="developer-profile" type="application/json" href="/developer.json" />
+        <link rel="alternate" type="text/plain" title="LLM Site Context" href="/llms.txt" />
+        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.xml" />
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">

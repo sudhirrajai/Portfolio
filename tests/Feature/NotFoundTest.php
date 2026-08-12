@@ -10,7 +10,7 @@ class NotFoundTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Test that a non-existent URL returns a 404 Inertia response.
+     * Test that a non-existent URL returns a 404 Inertia response with Error component.
      */
     public function test_non_existent_url_returns_404_inertia_response(): void
     {
@@ -18,7 +18,10 @@ class NotFoundTest extends TestCase
 
         $response->assertStatus(404);
         
-        // Assert that it renders the custom Inertia 404 page
-        $response->assertInertia(fn ($page) => $page->component('Portfolio/NotFound'));
+        // Assert that it renders the custom Inertia Error page
+        $response->assertInertia(fn ($page) => 
+            $page->component('Portfolio/Error')
+                 ->where('status', 404)
+        );
     }
 }

@@ -38,12 +38,45 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
     }
   };
 
+  const blogPostSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    'headline': post.title,
+    'description': post.excerpt,
+    'datePublished': post.created_at || post.date,
+    'dateModified': post.updated_at || post.created_at || post.date,
+    'author': {
+      '@type': 'Person',
+      'name': post.author_name || 'Sudhir Rajai',
+    },
+    'mainEntityOfPage': {
+      '@type': 'WebPage',
+      '@id': typeof window !== 'undefined' ? window.location.href : '',
+    },
+    'keywords': post.tags && Array.isArray(post.tags) ? post.tags.join(', ') : (typeof post.tags === 'string' ? post.tags : undefined),
+    'articleBody': post.content ? post.content.replace(/<[^>]*>?/gm, '').substring(0, 500) : post.excerpt,
+  };
+
+  const breadcrumbsSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': typeof window !== 'undefined' ? window.location.origin : '/' },
+      { '@type': 'ListItem', 'position': 2, 'name': 'Blog', 'item': typeof window !== 'undefined' ? `${window.location.origin}/blog` : '/blog' },
+      { '@type': 'ListItem', 'position': 3, 'name': post.title, 'item': typeof window !== 'undefined' ? window.location.href : '' }
+    ]
+  };
+
   return (
     <>
       <SEOHead 
         title={post.title} 
         description={post.excerpt} 
-        keywords={post.tags && Array.isArray(post.tags) ? post.tags.join(', ') : (typeof post.tags === 'string' ? post.tags : undefined)} 
+        keywords={post.tags && Array.isArray(post.tags) ? post.tags.join(', ') : (typeof post.tags === 'string' ? post.tags : undefined)}
+        type="article"
+        publishedTime={post.created_at || post.date}
+        modifiedTime={post.updated_at || post.created_at}
+        schemaData={[blogPostSchema, breadcrumbsSchema]}
       />
       <div className="pf-page">
         <Navbar />

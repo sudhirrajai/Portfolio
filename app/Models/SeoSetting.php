@@ -15,6 +15,7 @@ class SeoSetting extends Model
         'google_search_console_id',
         'custom_meta_tags',
         'google_analytics_property_id',
-        'google_analytics_credentials_json'
+        'google_analytics_credentials_json',
+        'llm_instructions',
     ];
 }
