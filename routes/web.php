@@ -129,10 +129,18 @@ Route::get('/blog/{slug}', function ($slug) {
             ])->values(),
         ])->values();
 
+    $appUrl = rtrim(config('app.url'), '/');
+    $canonicalUrl = $appUrl . "/blog/{$blog->slug}";
+    $featuredImageUrl = $blog->image_path 
+        ? (str_starts_with($blog->image_path, 'http') ? $blog->image_path : "{$appUrl}/storage/{$blog->image_path}") 
+        : "{$appUrl}/placeholder.svg";
+
     return Inertia::render('Portfolio/BlogPost', [
-        'post'              => $blog,
-        'comments'          => $comments,
+        'post'               => $blog,
+        'comments'           => $comments,
         'recaptcha_site_key' => config('services.recaptcha.site_key'),
+        'canonical_url'      => $canonicalUrl,
+        'featured_image_url' => $featuredImageUrl,
     ]);
 });
 
@@ -250,8 +258,17 @@ Route::get('/case-studies/{slug}', function ($slug) {
         ->where('slug', $slug)
         ->where('is_published', true)
         ->firstOrFail();
+
+    $appUrl = rtrim(config('app.url'), '/');
+    $canonicalUrl = $appUrl . "/case-studies/{$caseStudy->slug}";
+    $featuredImageUrl = $caseStudy->featured_image 
+        ? (str_starts_with($caseStudy->featured_image, 'http') ? $caseStudy->featured_image : "{$appUrl}/storage/{$caseStudy->featured_image}") 
+        : "{$appUrl}/placeholder.svg";
+
     return Inertia::render('Portfolio/CaseStudies/Show', [
-        'caseStudy' => $caseStudy
+        'caseStudy'          => $caseStudy,
+        'canonical_url'      => $canonicalUrl,
+        'featured_image_url' => $featuredImageUrl,
     ]);
 })->name('portfolio.case-studies.show');
 
@@ -362,6 +379,11 @@ Route::middleware('auth')->group(function () {
     Route::put('admin/profile', [\App\Http\Controllers\Admin\PortfolioProfileController::class, 'update'])->name('admin.profile.update');
     Route::get('admin/seo', [\App\Http\Controllers\Admin\SeoSettingController::class, 'index'])->name('admin.seo.index');
     Route::put('admin/seo/{seo}', [\App\Http\Controllers\Admin\SeoSettingController::class, 'update'])->name('admin.seo.update');
+    Route::post('admin/seo/sync-gsc', [\App\Http\Controllers\Admin\SeoSettingController::class, 'syncGsc'])->name('admin.seo.sync-gsc');
+    Route::post('admin/seo/health-check', [\App\Http\Controllers\Admin\SeoSettingController::class, 'runHealthCheck'])->name('admin.seo.health-check');
+    Route::post('admin/seo/inspect-url', [\App\Http\Controllers\Admin\SeoSettingController::class, 'inspectUrl'])->name('admin.seo.inspect-url');
+    Route::post('admin/seo/redirects', [\App\Http\Controllers\Admin\SeoSettingController::class, 'storeRedirect'])->name('admin.seo.redirects.store');
+    Route::delete('admin/seo/redirects/{redirect}', [\App\Http\Controllers\Admin\SeoSettingController::class, 'deleteRedirect'])->name('admin.seo.redirects.destroy');
 
     // Dynamic "Schedule a Call" Admin & Google Integrations
     Route::get('admin/bookings', [\App\Http\Controllers\Admin\BookingController::class, 'index'])->name('admin.bookings.index');

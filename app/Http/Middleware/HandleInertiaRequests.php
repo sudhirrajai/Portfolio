@@ -36,6 +36,11 @@ class HandleInertiaRequests extends Middleware
             ],
             'profile' => \App\Models\Profile::first(),
             'seoSettings' => \App\Models\SeoSetting::all()->keyBy('page_key'),
+            'flash' => [
+                'message' => fn () => $request->session()->get('message'),
+                'error' => fn () => $request->session()->get('error'),
+                'console_output' => fn () => $request->session()->get('console_output'),
+            ],
         ];
     }
 }

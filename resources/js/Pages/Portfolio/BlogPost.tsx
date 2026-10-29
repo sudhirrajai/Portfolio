@@ -6,7 +6,7 @@ import { PageContainer } from '@/Components/PageContainer';
 import { Footer } from '@/Components/Footer';
 import { CommentSection } from '@/Components/CommentSection';
 
-const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
+const BlogPost = ({ post, comments = [], recaptcha_site_key, canonical_url, featured_image_url }: any) => {
   const [activePreviewImage, setActivePreviewImage] = React.useState<{ src: string; alt: string } | null>(null);
 
   if (!post) {
@@ -27,6 +27,38 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
     );
   }
 
+  // Resolve absolute image & canonical URL
+  const postImageUrl = featured_image_url || (post.image_path ? (post.image_path.startsWith('http') ? post.image_path : `/storage/${post.image_path}`) : '/placeholder.svg');
+  const postCanonical = canonical_url || (typeof window !== 'undefined' ? window.location.href.split('#')[0] : '');
+
+  // Generate Table of Contents and inject anchor IDs into headings
+  const { processedContent, headings } = React.useMemo(() => {
+    if (!post?.content) return { processedContent: '', headings: [] };
+
+    const headingList: Array<{ id: string; text: string; level: number }> = [];
+    let counter = 0;
+
+    const modified = post.content.replace(/<(h[2-3])([^>]*)>(.*?)<\/\1>/gi, (match: string, tag: string, attrs: string, text: string) => {
+      const cleanText = text.replace(/<[^>]*>/g, '').trim();
+      if (!cleanText) return match;
+
+      const slug = cleanText
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '') || `section-${++counter}`;
+
+      headingList.push({
+        id: slug,
+        text: cleanText,
+        level: tag.toLowerCase() === 'h2' ? 2 : 3
+      });
+
+      return `<${tag}${attrs} id="${slug}">${text}</${tag}>`;
+    });
+
+    return { processedContent: modified, headings: headingList };
+  }, [post?.content]);
+
   const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
     if (target.tagName === 'IMG') {
@@ -41,29 +73,41 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
   const blogPostSchema = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
+    'mainEntityOfPage': {
+      '@type': 'WebPage',
+      '@id': postCanonical,
+    },
     'headline': post.title,
     'description': post.excerpt,
+    'image': [
+      postImageUrl.startsWith('http') 
+        ? postImageUrl 
+        : (typeof window !== 'undefined' ? `${window.location.origin}${postImageUrl}` : `https://sudhirrajai.com${postImageUrl}`)
+    ],
     'datePublished': post.created_at || post.date,
     'dateModified': post.updated_at || post.created_at || post.date,
     'author': {
       '@type': 'Person',
       'name': post.author_name || 'Sudhir Rajai',
+      'url': typeof window !== 'undefined' ? window.location.origin : 'https://sudhirrajai.com',
+      'jobTitle': 'Senior Full-Stack Developer & DevOps Engineer',
     },
-    'mainEntityOfPage': {
-      '@type': 'WebPage',
-      '@id': typeof window !== 'undefined' ? window.location.href : '',
+    'publisher': {
+      '@type': 'Person',
+      'name': 'Sudhir Rajai',
+      'url': typeof window !== 'undefined' ? window.location.origin : 'https://sudhirrajai.com',
     },
     'keywords': post.tags && Array.isArray(post.tags) ? post.tags.join(', ') : (typeof post.tags === 'string' ? post.tags : undefined),
-    'articleBody': post.content ? post.content.replace(/<[^>]*>?/gm, '').substring(0, 500) : post.excerpt,
+    'articleBody': post.content ? post.content.replace(/<[^>]*>?/gm, '').substring(0, 1000) : post.excerpt,
   };
 
   const breadcrumbsSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     'itemListElement': [
-      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': typeof window !== 'undefined' ? window.location.origin : '/' },
-      { '@type': 'ListItem', 'position': 2, 'name': 'Blog', 'item': typeof window !== 'undefined' ? `${window.location.origin}/blog` : '/blog' },
-      { '@type': 'ListItem', 'position': 3, 'name': post.title, 'item': typeof window !== 'undefined' ? window.location.href : '' }
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': typeof window !== 'undefined' ? window.location.origin : 'https://sudhirrajai.com' },
+      { '@type': 'ListItem', 'position': 2, 'name': 'Blog', 'item': typeof window !== 'undefined' ? `${window.location.origin}/blog` : 'https://sudhirrajai.com/blog' },
+      { '@type': 'ListItem', 'position': 3, 'name': post.title, 'item': postCanonical }
     ]
   };
 
@@ -73,9 +117,12 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
         title={post.title} 
         description={post.excerpt} 
         keywords={post.tags && Array.isArray(post.tags) ? post.tags.join(', ') : (typeof post.tags === 'string' ? post.tags : undefined)}
+        image={postImageUrl}
+        url={postCanonical}
         type="article"
         publishedTime={post.created_at || post.date}
         modifiedTime={post.updated_at || post.created_at}
+        author={post.author_name || 'Sudhir Rajai'}
         schemaData={[blogPostSchema, breadcrumbsSchema]}
       />
       <div className="pf-page">
@@ -129,10 +176,33 @@ const BlogPost = ({ post, comments = [], recaptcha_site_key }: any) => {
             {post.excerpt}
           </p>
 
+          {/* Table of Contents (SEO & Sitelinks Optimization) */}
+          {headings.length >= 2 && (
+            <div className="mb-10 p-5 rounded-xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.02] backdrop-blur-sm">
+              <div className="flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                <span>📑</span>
+                <span>Table of Contents</span>
+              </div>
+              <nav className="flex flex-col gap-2">
+                {headings.map((h) => (
+                  <a
+                    key={h.id}
+                    href={`#${h.id}`}
+                    className={`text-sm text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors ${
+                      h.level === 3 ? 'pl-4 text-xs opacity-90' : 'font-medium'
+                    }`}
+                  >
+                    • {h.text}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          )}
+
           {/* Rich WYSIWYG HTML Block (Dark-mode Optimized via Global) */}
           <div 
             className="pf-prose" 
-            dangerouslySetInnerHTML={{ __html: post.content }} 
+            dangerouslySetInnerHTML={{ __html: processedContent || post.content }} 
             onClick={handleContentClick}
           />
 

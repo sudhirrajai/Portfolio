@@ -48,7 +48,9 @@ class SitemapController extends Controller
                 'loc' => url("/blog/{$post->slug}"),
                 'lastmod' => $post->updated_at ? $post->updated_at->toAtomString() : $now,
                 'changefreq' => 'weekly',
-                'priority' => '0.7'
+                'priority' => '0.7',
+                'image' => $post->image_path ? url('/storage/' . $post->image_path) : null,
+                'title' => $post->title,
             ];
         }
 
@@ -70,7 +72,9 @@ class SitemapController extends Controller
                 'loc' => url("/case-studies/{$case->slug}"),
                 'lastmod' => $case->updated_at ? $case->updated_at->toAtomString() : $now,
                 'changefreq' => 'weekly',
-                'priority' => '0.8'
+                'priority' => '0.8',
+                'image' => $case->featured_image ? url('/storage/' . $case->featured_image) : null,
+                'title' => $case->title,
             ];
         }
 
@@ -87,7 +91,7 @@ class SitemapController extends Controller
 
         // Build XML content
         $xml = '<?xml version="1.0" encoding="UTF-8"?>';
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">';
         
         foreach ($urls as $url) {
             $xml .= '<url>';
@@ -95,13 +99,22 @@ class SitemapController extends Controller
             $xml .= '<lastmod>' . $url['lastmod'] . '</lastmod>';
             $xml .= '<changefreq>' . $url['changefreq'] . '</changefreq>';
             $xml .= '<priority>' . $url['priority'] . '</priority>';
+            if (!empty($url['image'])) {
+                $xml .= '<image:image>';
+                $xml .= '<image:loc>' . htmlspecialchars($url['image']) . '</image:loc>';
+                if (!empty($url['title'])) {
+                    $xml .= '<image:title>' . htmlspecialchars($url['title']) . '</image:title>';
+                }
+                $xml .= '</image:image>';
+            }
             $xml .= '</url>';
         }
 
         $xml .= '</urlset>';
 
         return response($xml, 200)
-            ->header('Content-Type', 'application/xml; charset=utf-8');
+            ->header('Content-Type', 'application/xml; charset=utf-8')
+            ->header('Cache-Control', 'public, max-age=3600');
     }
 
     public function robots(): Response
