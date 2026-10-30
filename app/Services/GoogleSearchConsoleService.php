@@ -35,7 +35,7 @@ class GoogleSearchConsoleService
             if (is_array($credentials)) {
                 $client = new GoogleClient();
                 $client->setAuthConfig($credentials);
-                $client->addScope('https://www.googleapis.com/auth/webmasters.readonly');
+                $client->addScope('https://www.googleapis.com/auth/webmasters');
 
                 $this->client = $client;
                 $this->searchConsole = new SearchConsole($client);
@@ -206,6 +206,31 @@ class GoogleSearchConsoleService
         } catch (Exception $e) {
             Log::error("URL Inspection failed for {$url}: " . $e->getMessage());
             return null;
+        }
+    }
+
+    /**
+     * Submit/Ping the XML Sitemap to Google Search Console for site-wide crawling.
+     */
+    public function submitSitemap(?string $sitemapUrl = null): bool
+    {
+        if (!$this->isConnected()) {
+            return false;
+        }
+
+        $siteUrl = $this->getSiteUrl();
+        if (!$siteUrl) {
+            return false;
+        }
+
+        $sitemapUrl = $sitemapUrl ?: rtrim($siteUrl, '/') . '/sitemap.xml';
+
+        try {
+            $this->searchConsole->sitemaps->submit($siteUrl, $sitemapUrl);
+            return true;
+        } catch (Exception $e) {
+            Log::error('Search Console submitSitemap failed: ' . $e->getMessage());
+            return false;
         }
     }
 

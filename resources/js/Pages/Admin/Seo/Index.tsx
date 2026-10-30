@@ -291,7 +291,17 @@ export default function SeoIndex({
         });
     };
 
-    // 4. Trigger: Single URL Inspection
+    // 4. Trigger: Submit Sitemap to Google (Bulk Recrawl all 40 URLs)
+    const handleSubmitSitemap = () => {
+        setRunningAction('submit-sitemap');
+        router.post(route('admin.seo.submit-sitemap'), {}, {
+            preserveScroll: true,
+            onFinish: () => setRunningAction(null),
+            onSuccess: () => toast.success('Sitemap submitted to Google! All pages queued for crawling.')
+        });
+    };
+
+    // 5. Trigger: Single URL Inspection
     const handleInspectUrl = (e: React.FormEvent) => {
         e.preventDefault();
         if (!inspectInputUrl.trim()) return;
@@ -383,7 +393,7 @@ export default function SeoIndex({
                             </span>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                             {/* Command 1: Fast GSC Sync */}
                             <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-4 rounded-2xl border border-gray-200/70 dark:border-gray-800/70 shadow-sm flex flex-col justify-between">
                                 <div>
@@ -429,7 +439,7 @@ export default function SeoIndex({
                             </div>
 
                             {/* Command 3: Internal Health Audit */}
-                            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-4 rounded-2xl border border-gray-200/70 dark:border-gray-800/70 shadow-sm flex flex-col justify-between sm:col-span-2 lg:col-span-1">
+                            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-4 rounded-2xl border border-gray-200/70 dark:border-gray-800/70 shadow-sm flex flex-col justify-between">
                                 <div>
                                     <div className="flex items-center justify-between mb-1">
                                         <span className="text-xs font-black uppercase text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
@@ -447,6 +457,28 @@ export default function SeoIndex({
                                 >
                                     <Activity className={`w-3.5 h-3.5 ${runningAction === 'health-audit' ? 'animate-spin' : ''}`} />
                                     {runningAction === 'health-audit' ? 'Crawling Site...' : 'Run Site Health Audit'}
+                                </button>
+                            </div>
+
+                            {/* Command 4: Submit Sitemap to Google */}
+                            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-4 rounded-2xl border border-gray-200/70 dark:border-gray-800/70 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div className="flex items-center justify-between mb-1">
+                                        <span className="text-xs font-black uppercase text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                                            <Globe className="w-3.5 h-3.5" /> GSC Sitemap Ping
+                                        </span>
+                                        <span className="text-[10px] text-gray-400">Bulk Re-crawl</span>
+                                    </div>
+                                    <p className="text-xs text-gray-600 dark:text-gray-300 font-medium">Submit Sitemap to Google</p>
+                                    <p className="text-[11px] text-gray-400 mt-1 leading-relaxed">Pings Google Search Console to queue all 40 site URLs for recrawling at once.</p>
+                                </div>
+                                <button
+                                    onClick={handleSubmitSitemap}
+                                    disabled={runningAction !== null}
+                                    className="mt-4 w-full inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 px-3 rounded-xl transition-all shadow-sm disabled:opacity-50"
+                                >
+                                    <Globe className={`w-3.5 h-3.5 ${runningAction === 'submit-sitemap' ? 'animate-spin' : ''}`} />
+                                    {runningAction === 'submit-sitemap' ? 'Submitting...' : 'Submit Sitemap to Google'}
                                 </button>
                             </div>
                         </div>

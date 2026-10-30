@@ -44,6 +44,12 @@ class SyncSearchConsoleCommand extends Command
         $synced = $gsc->syncSearchAnalytics($days);
         $this->info("Successfully synced {$synced} query/page metrics from Google Search Console.");
 
+        // Automatically ping Google Search Console with sitemap
+        $this->info("Submitting sitemap.xml to Google Search Console...");
+        if ($gsc->submitSitemap()) {
+            $this->info("Sitemap successfully updated in Google Search Console.");
+        }
+
         if ($this->option('inspect')) {
             $this->info('Running URL inspection on all blog posts & case studies...');
 

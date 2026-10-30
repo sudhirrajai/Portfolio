@@ -26,7 +26,15 @@ interface CaseStudy {
   categories?: Category[];
 }
 
-const Show = ({ caseStudy }: { caseStudy: CaseStudy }) => {
+const Show = ({ 
+  caseStudy, 
+  canonical_url, 
+  featured_image_url 
+}: { 
+  caseStudy: CaseStudy; 
+  canonical_url?: string; 
+  featured_image_url?: string; 
+}) => {
   const [activePreviewImage, setActivePreviewImage] = React.useState<{ src: string; alt: string } | null>(null);
 
   if (!caseStudy) {
@@ -48,6 +56,10 @@ const Show = ({ caseStudy }: { caseStudy: CaseStudy }) => {
     );
   }
 
+  // Resolve absolute canonical and image URL
+  const caseStudyCanonical = canonical_url || (typeof window !== 'undefined' ? window.location.href.split('#')[0] : `https://sudhirrajai.com/case-studies/${caseStudy.slug}`);
+  const caseStudyImageUrl = featured_image_url || (caseStudy.image_path ? (caseStudy.image_path.startsWith('http') ? caseStudy.image_path : `/storage/${caseStudy.image_path}`) : '/placeholder.svg');
+
   const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
     if (target.tagName === 'IMG') {
@@ -64,15 +76,27 @@ const Show = ({ caseStudy }: { caseStudy: CaseStudy }) => {
     '@type': 'TechArticle',
     'headline': caseStudy.title,
     'description': caseStudy.summary,
+    'mainEntityOfPage': {
+      '@type': 'WebPage',
+      '@id': caseStudyCanonical,
+    },
+    'image': [
+      caseStudyImageUrl.startsWith('http') 
+        ? caseStudyImageUrl 
+        : (typeof window !== 'undefined' ? `${window.location.origin}${caseStudyImageUrl}` : `https://sudhirrajai.com${caseStudyImageUrl}`)
+    ],
     'dependencies': caseStudy.stack && Array.isArray(caseStudy.stack) ? caseStudy.stack.join(', ') : '',
     'proficiencyLevel': 'Expert',
     'author': {
       '@type': 'Person',
       'name': 'Sudhir Rajai',
+      'url': typeof window !== 'undefined' ? window.location.origin : 'https://sudhirrajai.com',
+      'jobTitle': 'Senior Full-Stack Developer & DevOps Engineer',
     },
     'publisher': {
-      '@type': 'Organization',
-      'name': caseStudy.client || 'Portfolio',
+      '@type': 'Person',
+      'name': 'Sudhir Rajai',
+      'url': typeof window !== 'undefined' ? window.location.origin : 'https://sudhirrajai.com',
     }
   };
 
@@ -80,9 +104,9 @@ const Show = ({ caseStudy }: { caseStudy: CaseStudy }) => {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     'itemListElement': [
-      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': typeof window !== 'undefined' ? window.location.origin : '/' },
-      { '@type': 'ListItem', 'position': 2, 'name': 'Case Studies', 'item': typeof window !== 'undefined' ? `${window.location.origin}/case-studies` : '/case-studies' },
-      { '@type': 'ListItem', 'position': 3, 'name': caseStudy.title, 'item': typeof window !== 'undefined' ? window.location.href : '' }
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': typeof window !== 'undefined' ? window.location.origin : 'https://sudhirrajai.com' },
+      { '@type': 'ListItem', 'position': 2, 'name': 'Case Studies', 'item': typeof window !== 'undefined' ? `${window.location.origin}/case-studies` : 'https://sudhirrajai.com/case-studies' },
+      { '@type': 'ListItem', 'position': 3, 'name': caseStudy.title, 'item': caseStudyCanonical }
     ]
   };
 
@@ -92,6 +116,8 @@ const Show = ({ caseStudy }: { caseStudy: CaseStudy }) => {
         title={`${caseStudy.title} | Case Study`} 
         description={caseStudy.summary} 
         keywords={caseStudy.stack && Array.isArray(caseStudy.stack) ? caseStudy.stack.join(', ') : undefined} 
+        image={caseStudyImageUrl}
+        url={caseStudyCanonical}
         type="article"
         schemaData={[caseStudySchema, breadcrumbsSchema]}
       />

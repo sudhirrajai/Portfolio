@@ -98,6 +98,29 @@ class SeoSettingController extends Controller
             ->with('console_output', $output);
     }
 
+    public function submitSitemap(GoogleSearchConsoleService $gsc)
+    {
+        $siteUrl = $gsc->getSiteUrl() ?: 'https://sudhirrajai.com/';
+        $sitemapUrl = rtrim($siteUrl, '/') . '/sitemap.xml';
+
+        $success = $gsc->submitSitemap($sitemapUrl);
+
+        if ($success) {
+            $output = "Google Search Console Sitemap Submission:\n" .
+                "• Target Site: {$siteUrl}\n" .
+                "• Submitted Sitemap: {$sitemapUrl}\n" .
+                "• Submission Time: " . now()->toIso8601String() . "\n" .
+                "• Result: SUCCESS (200 OK)\n" .
+                "• Status: Googlebot has queued all URLs inside the sitemap for discovery and re-indexing.\n";
+
+            return redirect()->back()
+                ->with('message', 'Sitemap submitted to Google Search Console! Google will recrawl all pages.')
+                ->with('console_output', $output);
+        }
+
+        return redirect()->back()->with('error', 'Failed to submit sitemap. Check Search Console API permissions.');
+    }
+
     public function inspectUrl(Request $request, GoogleSearchConsoleService $gsc)
     {
         $request->validate(['url' => 'required|string']);

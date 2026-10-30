@@ -20,6 +20,14 @@ class HandleSeoRedirects
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // 0. Canonical Host Normalization (Redirect www to non-www to prevent duplicate content)
+        $host = $request->getHost();
+        if (str_starts_with($host, 'www.')) {
+            $canonicalHost = preg_replace('/^www\./i', '', $host);
+            $targetUrl = $request->getScheme() . '://' . $canonicalHost . $request->getRequestUri();
+            return redirect()->away($targetUrl, 301);
+        }
+
         // Safe check for migrations / test setups
         if (!Schema::hasTable('seo_redirects')) {
             return $next($request);

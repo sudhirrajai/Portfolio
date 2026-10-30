@@ -380,6 +380,7 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/seo', [\App\Http\Controllers\Admin\SeoSettingController::class, 'index'])->name('admin.seo.index');
     Route::put('admin/seo/{seo}', [\App\Http\Controllers\Admin\SeoSettingController::class, 'update'])->name('admin.seo.update');
     Route::post('admin/seo/sync-gsc', [\App\Http\Controllers\Admin\SeoSettingController::class, 'syncGsc'])->name('admin.seo.sync-gsc');
+    Route::post('admin/seo/submit-sitemap', [\App\Http\Controllers\Admin\SeoSettingController::class, 'submitSitemap'])->name('admin.seo.submit-sitemap');
     Route::post('admin/seo/health-check', [\App\Http\Controllers\Admin\SeoSettingController::class, 'runHealthCheck'])->name('admin.seo.health-check');
     Route::post('admin/seo/inspect-url', [\App\Http\Controllers\Admin\SeoSettingController::class, 'inspectUrl'])->name('admin.seo.inspect-url');
     Route::post('admin/seo/redirects', [\App\Http\Controllers\Admin\SeoSettingController::class, 'storeRedirect'])->name('admin.seo.redirects.store');
